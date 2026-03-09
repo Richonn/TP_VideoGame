@@ -57,6 +57,7 @@
 - [x] Écran de Game Over (score, vagues survécues)
 - [x] Feedback visuel au survol d'une case (placement de tour valide/invalide)
 - [x] Affichage de la portée des tours (cercle en pointillés — `TowerRangeDisplay`)
+- [x] Quadrillage de la map (lignes transparentes — `GridOverlay`)
 
 ### 🌫️ Culling logique (bonus / critère qualité)
 - [ ] Implémenter un **brouillard de guerre**
