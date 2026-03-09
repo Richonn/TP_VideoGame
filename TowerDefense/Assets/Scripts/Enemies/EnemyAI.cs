@@ -37,6 +37,8 @@ public class EnemyAI : MonoBehaviour
     private Transform      _cibleBase;
     private bool           _arrivee;
 
+    public int IndexWaypoint => _indexWaypoint;
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
     void Awake()
     {

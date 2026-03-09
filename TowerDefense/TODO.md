@@ -19,7 +19,7 @@
 - [x] Migrer vers le nouveau **Input System** (package Unity) pour les deux joueurs
 - [x] Coder le **gestionnaire de contrôles maison** (traitement des inputs, pas juste les lire)
 - [x] Chaque joueur confiné dans sa moitié de map
-- [ ] Action : poser une tour (bouton dédié par joueur)
+- [x] Action : poser une tour (bouton dédié par joueur)
 - [ ] Action : améliorer / vendre une tour
 
 ### 🗺️ Flot d'application `/15`
@@ -48,13 +48,13 @@
 - [x] Gestion des cas bloqués (chemin impossible)
 
 ### 🖥️ Interface graphique `/20`
-- [ ] HUD Joueur 1 (ressources, zone gauche)
-- [ ] HUD Joueur 2 (ressources, zone droite)
-- [ ] HP de la base centrale (barre de vie partagée)
-- [ ] Indicateur de vague actuelle et vague suivante
-- [ ] Timer de la phase de préparation
-- [ ] Écran de Game Over (score, vagues survécues)
-- [ ] Feedback visuel au survol d'une case (placement de tour valide/invalide)
+- [x] HUD Joueur 1 (ressources, zone gauche)
+- [x] HUD Joueur 2 (ressources, zone droite)
+- [x] HP de la base centrale (barre de vie partagée)
+- [x] Indicateur de vague actuelle et vague suivante
+- [x] Timer de la phase de préparation
+- [x] Écran de Game Over (score, vagues survécues)
+- [x] Feedback visuel au survol d'une case (placement de tour valide/invalide)
 
 ### 🌫️ Culling logique (bonus / critère qualité)
 - [ ] Implémenter un **brouillard de guerre**
