@@ -187,7 +187,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -241,7 +241,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 5, y: 5}
   m_EdgeRadius: 0
 --- !u!114 &10436964
 MonoBehaviour:
@@ -265,8 +265,8 @@ Transform:
   m_GameObject: {fileID: 10436961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 20, y: 20, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -593,9 +593,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02c0f1d69c0e94ad6b254e1dbfbef2be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  origineGrille: {x: -10, y: -5}
-  largeur: 20
-  hauteur: 10
+  origineGrille: {x: -20, y: -10}
+  largeur: 40
+  hauteur: 20
   tailleCellule: 1
   layerObstacles:
     serializedVersion: 2
@@ -1283,8 +1283,8 @@ Transform:
   m_GameObject: {fileID: 574923525}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.97, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -19, y: 8, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1940,10 +1940,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   playerNumber: 2
   moveSpeed: 5
-  minX: -5
-  maxX: 5
-  minY: -5
-  maxY: 5
+  minX: -20
+  maxX: 20
+  minY: -10
+  maxY: 10
 --- !u!50 &911191407
 Rigidbody2D:
   serializedVersion: 5
@@ -1981,7 +1981,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2002,7 +2002,7 @@ MonoBehaviour:
   towerPrefab: {fileID: 2272521860215137011, guid: 590ff84bb92c7482c8b72f07816ac2c7, type: 3}
   coutTour: 50
   minX: 0
-  maxX: 10
+  maxX: 20
 --- !u!1 &928177401
 GameObject:
   m_ObjectHideFlags: 0
@@ -2088,8 +2088,8 @@ Transform:
   m_GameObject: {fileID: 928177401}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.03, y: 3.02, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 19, y: 8, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2207,7 +2207,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2439,10 +2439,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   playerNumber: 1
   moveSpeed: 5
-  minX: -5
-  maxX: 5
-  minY: -5
-  maxY: 5
+  minX: -20
+  maxX: 20
+  minY: -10
+  maxY: 10
 --- !u!50 &1106202566
 Rigidbody2D:
   serializedVersion: 5
@@ -2479,8 +2479,8 @@ Transform:
   m_GameObject: {fileID: 1106202563}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -4, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2500,7 +2500,7 @@ MonoBehaviour:
   playerIndex: 1
   towerPrefab: {fileID: 2272521860215137011, guid: 590ff84bb92c7482c8b72f07816ac2c7, type: 3}
   coutTour: 50
-  minX: -10
+  minX: -20
   maxX: 0
 --- !u!1 &1137215466
 GameObject:
@@ -2773,7 +2773,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

@@ -10,10 +10,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Limites de la demi-map")]
     [Tooltip("Bornes à configurer selon la moitié de map du joueur.")]
-    public float minX = -10f;
-    public float maxX = 0f;
-    public float minY = -5f;
-    public float maxY = 5f;
+    public float minX = -20f;
+    public float maxX = 20f;
+    public float minY = -10f;
+    public float maxY = 10f;
 
     private Rigidbody2D _rb;
     private InputManager.PlayerInputData _input;

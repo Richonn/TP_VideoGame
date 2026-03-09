@@ -19,10 +19,10 @@ public class GridManager : MonoBehaviour
     // ── Inspector ─────────────────────────────────────────────────────────────
     [Header("Dimensions de la grille")]
     [Tooltip("Coin bas-gauche de la grille en coordonnées monde.")]
-    [SerializeField] private Vector2 origineGrille = new Vector2(-10f, -5f);
+    [SerializeField] private Vector2 origineGrille = new Vector2(-20f, -10f);
     [SerializeField] private int largeur  = 20;
     [SerializeField] private int hauteur  = 10;
-    [SerializeField] private float tailleCellule = 1f;
+    [SerializeField] private float tailleCellule = 2f;
 
     [Header("Obstacles")]
     [Tooltip("Layer des tours et obstacles bloquants.")]

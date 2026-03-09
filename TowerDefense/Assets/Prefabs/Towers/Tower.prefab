@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4213045075352464107}
   - component: {fileID: 2861421160251232234}
   - component: {fileID: 436505195364509169}
+  - component: {fileID: 760589840488267352}
   m_Layer: 3
   m_Name: Tower
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.92632, y: 0.39945, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0.8076626, g: 0.9339623, b: 0.039649326, a: 1}
@@ -137,7 +138,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &436505195364509169
 MonoBehaviour:
@@ -158,3 +159,20 @@ MonoBehaviour:
   layerEnnemis:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &760589840488267352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2272521860215137011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a91287b866864b1fa639f2661ed7569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerRangeDisplay
+  couleur: {r: 1, g: 1, b: 0.2, a: 0.5}
+  largeurLigne: 0.06
+  nombreTirets: 20
+  ratioTiret: 0.55
+  pointsParTiret: 8

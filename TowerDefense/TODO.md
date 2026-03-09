@@ -18,8 +18,9 @@
 - [x] Mouvement Joueur 2 (manette Switch — Joy-Con ou Pro Controller)
 - [x] Migrer vers le nouveau **Input System** (package Unity) pour les deux joueurs
 - [x] Coder le **gestionnaire de contrôles maison** (traitement des inputs, pas juste les lire)
-- [x] Chaque joueur confiné dans sa moitié de map
-- [x] Action : poser une tour (bouton dédié par joueur)
+- [x] Mouvement libre sur toute la map (les deux joueurs)
+- [x] Placement des tours limité à la demi-map respective de chaque joueur
+- [x] Action : poser une tour (bouton dédié par joueur) — bloc **2×2 cellules**
 - [ ] Action : améliorer / vendre une tour
 
 ### 🗺️ Flot d'application `/15`
@@ -55,6 +56,7 @@
 - [x] Timer de la phase de préparation
 - [x] Écran de Game Over (score, vagues survécues)
 - [x] Feedback visuel au survol d'une case (placement de tour valide/invalide)
+- [x] Affichage de la portée des tours (cercle en pointillés — `TowerRangeDisplay`)
 
 ### 🌫️ Culling logique (bonus / critère qualité)
 - [ ] Implémenter un **brouillard de guerre**
@@ -120,5 +122,6 @@
 | Culling | Brouillard de guerre basé sur position des agents |
 | Multijoueur | Local, deux contrôleurs physiques séparés |
 | Vue | Top-down 2D |
-| Map | Divisée en deux moitiés symétriques |
+| Map | Divisée en deux moitiés symétriques — 40×20 unités, cellules 2×2 |
+| Tours | Bloc 2×2 cellules, portée visible (cercle pointillé) |
 | Base | Centrale, partagée entre les deux joueurs |
