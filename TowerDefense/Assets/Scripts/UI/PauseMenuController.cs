@@ -20,7 +20,9 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private Button quitButton;
 
     [SerializeField] private Canvas settingsPanel;    // Panneaux de sous-menus (optionnel)
-    [SerializeField] private Canvas controlsPanel;
+    [SerializeField] private GameObject controlsPanel;  // Panel de contrôles (pas un Canvas)
+    
+    private GameObject menuPanelGO;  // Référence au panel de menu principal
 
     private bool _isPaused = false;
     public bool IsPaused => _isPaused;
@@ -59,7 +61,7 @@ public class PauseMenuController : MonoBehaviour
             settingsPanel.enabled = false;
 
         if (controlsPanel != null)
-            controlsPanel.enabled = false;
+            controlsPanel.SetActive(false);
 
         // Assigner les listeners aux boutons
         if (settingsButton != null)
@@ -111,6 +113,9 @@ public class PauseMenuController : MonoBehaviour
         panelImage.color = new Color(0.15f, 0.15f, 0.2f, 1f);
         RectTransform panelRT = panelGO.GetComponent<RectTransform>();
         panelRT.sizeDelta = new Vector2(600, 550);
+        
+        // Garder la référence au panel du menu principal
+        menuPanelGO = panelGO;
 
         // Ajouter une VerticalLayoutGroup
         VerticalLayoutGroup vlg = panelGO.AddComponent<VerticalLayoutGroup>();
@@ -229,7 +234,7 @@ public class PauseMenuController : MonoBehaviour
             settingsPanel.enabled = false;
 
         if (controlsPanel != null)
-            controlsPanel.enabled = false;
+            controlsPanel.SetActive(false);
 
         // Réactiver les inputs des joueurs
         if (InputManager.Instance != null)
@@ -263,29 +268,32 @@ public class PauseMenuController : MonoBehaviour
             CreateControlsPanel();
         }
         
+        // Masquer le menu principal
+        if (menuPanelGO != null)
+        {
+            menuPanelGO.SetActive(false);
+        }
+        
+        // Afficher le panneau de contrôles
         if (controlsPanel != null)
         {
-            controlsPanel.enabled = !controlsPanel.enabled;
+            controlsPanel.SetActive(true);
         }
     }
 
     private void CreateControlsPanel()
     {
-        // Créer un Canvas pour le panneau de contrôles
+        // Créer un GameObject pour le panneau de contrôles (PAS un Canvas !)
         GameObject controlsPanelGO = new GameObject("ControlsPanel");
         controlsPanelGO.transform.SetParent(pauseMenuCanvas.transform, false);
         
-        controlsPanel = controlsPanelGO.AddComponent<Canvas>();
-        controlsPanel.renderMode = RenderMode.ScreenSpaceOverlay;
-        controlsPanelGO.AddComponent<GraphicRaycaster>();
+        // Image de fond
+        Image panelBG = controlsPanelGO.AddComponent<Image>();
+        panelBG.color = new Color(0.15f, 0.15f, 0.2f, 1f);
 
         RectTransform panelRT = controlsPanelGO.GetComponent<RectTransform>();
         panelRT.offsetMin = Vector2.zero;
         panelRT.offsetMax = Vector2.zero;
-
-        // Fond semi-transparent
-        Image panelBG = controlsPanelGO.AddComponent<Image>();
-        panelBG.color = new Color(0, 0, 0, 0.7f);
 
         // Container vertical principal
         GameObject mainContainerGO = new GameObject("MainContainer");
@@ -295,13 +303,13 @@ public class PauseMenuController : MonoBehaviour
         mainVLG.spacing = 10;
         mainVLG.padding = new RectOffset(30, 30, 20, 20);
         mainVLG.childForceExpandWidth = true;
-        mainVLG.childForceExpandHeight = false;
+        mainVLG.childForceExpandHeight = true;
 
         RectTransform mainRT = mainContainerGO.GetComponent<RectTransform>();
         mainRT.offsetMin = Vector2.zero;
         mainRT.offsetMax = new Vector2(0, -80);  // Réserver l'espace pour les boutons
 
-        // Content pour les contrôles
+        // Content pour les contrôles (grandi pour occuper l'espace)
         GameObject contentGO = new GameObject("Content");
         contentGO.transform.SetParent(mainContainerGO.transform, false);
         
@@ -312,10 +320,12 @@ public class PauseMenuController : MonoBehaviour
         vlg.childForceExpandHeight = false;
 
         LayoutElement contentLE = contentGO.AddComponent<LayoutElement>();
-        contentLE.preferredHeight = 500;
+        contentLE.preferredWidth = -1;  // -1 = flexible
+        contentLE.flexibleHeight = 1;   // Prend tout l'espace disponible
 
         RectTransform contentRT = contentGO.GetComponent<RectTransform>();
-        contentRT.sizeDelta = new Vector2(600, 500);
+        contentRT.offsetMin = Vector2.zero;
+        contentRT.offsetMax = Vector2.zero;
 
         // Créer un container pour les rebindings
         GameObject rebindContainerGO = new GameObject("RebindContainer");
@@ -330,6 +340,10 @@ public class PauseMenuController : MonoBehaviour
         RectTransform rebindRT = rebindContainerGO.GetComponent<RectTransform>();
         rebindRT.offsetMin = Vector2.zero;
         rebindRT.offsetMax = Vector2.zero;
+
+        LayoutElement rebindLE = rebindContainerGO.AddComponent<LayoutElement>();
+        rebindLE.preferredWidth = -1;  // -1 = flexible
+        rebindLE.flexibleHeight = 1;   // Prend tout l'espace disponible
 
         // Désactiver le container pour que Start() ne soit pas appelé immédiatement
         rebindContainerGO.SetActive(false);
@@ -352,16 +366,27 @@ public class PauseMenuController : MonoBehaviour
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = false;
 
+        LayoutElement bottomLE = bottomPanelGO.AddComponent<LayoutElement>();
+        bottomLE.preferredHeight = 80;
+        bottomLE.preferredWidth = -1;  // -1 = flexible
+
         RectTransform bottomRT = bottomPanelGO.GetComponent<RectTransform>();
-        bottomRT.offsetMin = new Vector2(0, 0);
-        bottomRT.offsetMax = new Vector2(0, -520);
-        bottomRT.sizeDelta = new Vector2(600, 80);
+        bottomRT.offsetMin = Vector2.zero;
+        bottomRT.offsetMax = Vector2.zero;
 
         // Bouton Reset
         CreateControlsButton(bottomPanelGO, "Reset", "RESET DEFAULTS", () => ResetControlBindings(rebindingUI));
 
         // Bouton Back
         CreateControlsButton(bottomPanelGO, "Back", "BACK", () => CloseControlsPanel());
+
+        // Forcer la reconstruction des layouts
+        LayoutRebuilder.ForceRebuildLayoutImmediate(mainRT);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRT);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rebindRT);
+
+        // Stocker la référence du panel
+        controlsPanel = controlsPanelGO;
 
         Debug.Log("[PauseMenu] Panneau de contrôles créé");
     }
@@ -418,9 +443,17 @@ public class PauseMenuController : MonoBehaviour
     private void CloseControlsPanel()
     {
         Debug.Log("[PauseMenu] Fermeture du panneau de contrôles");
+        
+        // Fermer le panneau de contrôles
         if (controlsPanel != null)
         {
-            controlsPanel.enabled = false;
+            controlsPanel.SetActive(false);
+        }
+        
+        // Réouvrir le menu principal
+        if (menuPanelGO != null)
+        {
+            menuPanelGO.SetActive(true);
         }
     }
 

@@ -114,6 +114,9 @@ public class ControlsRebindingUI : MonoBehaviour
             CreateRebindingRow(actions[i], displayNames[i]);
         }
 
+        // Forcer Unity à recalculer les layouts
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rebindingContainer as RectTransform);
+        
         Debug.Log("[ControlsRebinding] UI créée avec succès");
     }
 
@@ -127,16 +130,18 @@ public class ControlsRebindingUI : MonoBehaviour
         titleText.fontSize = 28;
         titleText.alignment = TextAlignmentOptions.Left;
         titleText.fontStyle = FontStyles.Bold;
+        titleText.color = Color.white;  // Assurer que le texte est blanc
         
         LayoutElement layoutElement = titleGO.AddComponent<LayoutElement>();
         layoutElement.preferredHeight = 40;
+        layoutElement.preferredWidth = -1;  // -1 = flexible width
 
         RectTransform rt = titleGO.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(600, 40);
+        rt.offsetMin = new Vector2(0, 0);
+        rt.offsetMax = new Vector2(0, 0);
     }
 
-    private void CreateRebindingRow(KeyBindingManager.ActionType action, string displayName)
-    {
+    private void CreateRebindingRow(KeyBindingManager.ActionType action, string displayName) {
         // Container pour la ligne
         GameObject rowGO = new GameObject($"{action}_Row");
         rowGO.transform.SetParent(rebindingContainer, false);
@@ -148,9 +153,10 @@ public class ControlsRebindingUI : MonoBehaviour
 
         LayoutElement rowLE = rowGO.AddComponent<LayoutElement>();
         rowLE.preferredHeight = 60;
+        rowLE.preferredWidth = -1;
 
         RectTransform rowRT = rowGO.GetComponent<RectTransform>();
-        rowRT.sizeDelta = new Vector2(600, 60);
+        rowRT.sizeDelta = new Vector2(0, 60);
 
         // Label (nom de l'action)
         GameObject labelGO = new GameObject("Label");
@@ -160,16 +166,20 @@ public class ControlsRebindingUI : MonoBehaviour
         labelText.text = displayName;
         labelText.fontSize = 24;
         labelText.alignment = TextAlignmentOptions.Left;
+        labelText.color = Color.white;
+        labelText.textWrappingMode = TextWrappingModes.NoWrap;
         
         LayoutElement labelLE = labelGO.AddComponent<LayoutElement>();
         labelLE.preferredWidth = 200;
         labelLE.preferredHeight = 60;
 
+        RectTransform labelRT = labelGO.GetComponent<RectTransform>();
+        labelRT.sizeDelta = new Vector2(200, 60);
+
         // Affichage de la touche actuelle
         GameObject displayGO = new GameObject("Display");
         displayGO.transform.SetParent(rowGO.transform, false);
         
-        // Ajouter d'abord le fond Image
         Image displayBG = displayGO.AddComponent<Image>();
         displayBG.color = new Color(0.2f, 0.2f, 0.3f, 1f);
         
@@ -177,7 +187,10 @@ public class ControlsRebindingUI : MonoBehaviour
         displayLE.preferredWidth = 150;
         displayLE.preferredHeight = 60;
 
-        // Enfant pour le texte de la touche
+        RectTransform displayRT = displayGO.GetComponent<RectTransform>();
+        displayRT.sizeDelta = new Vector2(150, 60);
+
+        // Texte de la touche
         GameObject displayTextGO = new GameObject("Text");
         displayTextGO.transform.SetParent(displayGO.transform, false);
         
@@ -186,6 +199,8 @@ public class ControlsRebindingUI : MonoBehaviour
         displayText.text = KeyBindingManager.GetKeyDisplayName(binding.KeyboardKey);
         displayText.fontSize = 22;
         displayText.alignment = TextAlignmentOptions.Center;
+        displayText.color = Color.white;
+        displayText.textWrappingMode = TextWrappingModes.NoWrap;
         
         RectTransform displayTextRT = displayTextGO.GetComponent<RectTransform>();
         displayTextRT.offsetMin = Vector2.zero;
@@ -205,18 +220,26 @@ public class ControlsRebindingUI : MonoBehaviour
         colors.pressedColor = new Color(0.2f, 0.5f, 0.7f, 1f);
         rebindBtn.colors = colors;
         
-        TextMeshProUGUI rebindBtnText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
-        rebindBtnText.transform.SetParent(rebindBtnGO.transform, false);
-        rebindBtnText.text = "REBIND";
-        rebindBtnText.fontSize = 18;
-        rebindBtnText.alignment = TextAlignmentOptions.Center;
-        RectTransform rebindBtnTextRT = rebindBtnText.GetComponent<RectTransform>();
-        rebindBtnTextRT.offsetMin = Vector2.zero;
-        rebindBtnTextRT.offsetMax = Vector2.zero;
-        
         LayoutElement rebindBtnLE = rebindBtnGO.AddComponent<LayoutElement>();
         rebindBtnLE.preferredWidth = 120;
         rebindBtnLE.preferredHeight = 60;
+
+        RectTransform rebindBtnRT = rebindBtnGO.GetComponent<RectTransform>();
+        rebindBtnRT.sizeDelta = new Vector2(120, 60);
+
+        // Texte du bouton
+        GameObject rebindBtnTextGO = new GameObject("Text");
+        rebindBtnTextGO.transform.SetParent(rebindBtnGO.transform, false);
+        TextMeshProUGUI rebindBtnText = rebindBtnTextGO.AddComponent<TextMeshProUGUI>();
+        rebindBtnText.text = "REBIND";
+        rebindBtnText.fontSize = 18;
+        rebindBtnText.alignment = TextAlignmentOptions.Center;
+        rebindBtnText.color = Color.white;
+        rebindBtnText.textWrappingMode = TextWrappingModes.NoWrap;
+        
+        RectTransform rebindBtnTextRT = rebindBtnTextGO.GetComponent<RectTransform>();
+        rebindBtnTextRT.offsetMin = Vector2.zero;
+        rebindBtnTextRT.offsetMax = Vector2.zero;
 
         // Enregistrer pour tracking
         RebindingDisplay display = new RebindingDisplay

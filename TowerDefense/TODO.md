@@ -66,7 +66,7 @@
 
 ### ⭐ Fonctionnalités individuelles `/20 chacun`
 - [ ] **Membre 1** — IA avancée (comportements variés : rush, tank, contournement)
-- [ ] **Membre 2** — Personnalisation des entrées (rebind des touches/boutons)
+- [x] **Membre 2** — Personnalisation des entrées (rebind des touches/boutons) > WIP
 
 ### 📄 Document TP2
 - [ ] Diagramme du flot d'application
