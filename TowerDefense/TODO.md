@@ -18,6 +18,7 @@
 - [x] Mouvement Joueur 2 (manette Switch — Joy-Con ou Pro Controller)
 - [x] Migrer vers le nouveau **Input System** (package Unity) pour les deux joueurs
 - [x] Coder le **gestionnaire de contrôles maison** (traitement des inputs, pas juste les lire)
+- [x] Isolation P1/P2 — clavier réservé à P1, manette (`Gamepad.current`) réservée à P2
 - [x] Mouvement libre sur toute la map (les deux joueurs)
 - [x] Placement des tours limité à la demi-map respective de chaque joueur
 - [x] Action : poser une tour (bouton dédié par joueur) — bloc **2×2 cellules**
@@ -31,6 +32,7 @@
 - [x] Phase de **préparation** (placement des tours, timer)
 - [x] Phase de **défense** (vagues d'ennemis actives, joueurs se baladent)
 - [x] **Écran scindé** (split-screen local — caméra P1 gauche, caméra P2 droite)
+- [x] **Menu de pause** (Escape → pause, boutons : Resume / Settings / Controls / Restart / Back to Menu / Quit)
 
 ### 🤖 Agent autonome `/10`
 - [x] Créer le prefab `Enemy` (dans Unity Editor)
@@ -66,7 +68,7 @@
 
 ### ⭐ Fonctionnalités individuelles `/20 chacun`
 - [ ] **Membre 1** — IA avancée (comportements variés : rush, tank, contournement)
-- [x] **Membre 2** — Personnalisation des entrées (rebind des touches/boutons) > WIP
+- [x] **Membre 2** — Personnalisation des entrées (rebind des touches/boutons)
 
 ### 📄 Document TP2
 - [ ] Diagramme du flot d'application

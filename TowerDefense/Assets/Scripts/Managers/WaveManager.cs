@@ -46,6 +46,9 @@ public class WaveManager : MonoBehaviour
     {
         if (etat == GameManager.GameState.Defense)
             LancerVague();
+
+        if (etat == GameManager.GameState.Preparation)
+            _vagueActive = false;
     }
 
     // ── Spawn ─────────────────────────────────────────────────────────────────
@@ -67,7 +70,7 @@ public class WaveManager : MonoBehaviour
         for (int i = 0; i < nbEnnemis; i++)
         {
             SpawnEnnemi();
-            yield return new WaitForSeconds(intervalleSpawn);
+            yield return new WaitForSecondsRealtime(intervalleSpawn);
         }
     }
 

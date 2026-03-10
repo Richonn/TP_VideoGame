@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Gestionnaire d'entrées personnalisé sans dépendre de l'InputActionAsset.
@@ -52,9 +53,10 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        // Lire les entrées pour les deux joueurs avec le système personnalisé
-        _inputData[0] = _playerInputEnabled1 ? TraiterInputsCustom() : new PlayerInputData();
-        _inputData[1] = _playerInputEnabled2 ? TraiterInputsCustom() : new PlayerInputData();
+        // Joueur 1 : clavier (KeyBindingManager)
+        // Joueur 2 : manette (joystick Unity)
+        _inputData[0] = _playerInputEnabled1 ? TraiterInputsCustom()   : new PlayerInputData();
+        _inputData[1] = _playerInputEnabled2 ? TraiterInputsGamepad()  : new PlayerInputData();
 
         // Détection de la touche Escape pour afficher le menu de pause
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -124,6 +126,32 @@ public class InputManager : MonoBehaviour
             PlaceTowerHeld = Input.GetKey(placeTowerBinding.KeyboardKey),
             InteractHeld = Input.GetKey(interactBinding.KeyboardKey),
             LancerVagueHeld = Input.GetKey(lancerVagueBinding.KeyboardKey),
+        };
+    }
+
+    /// <summary>
+    /// Entrées Joueur 2 via manette (New Input System — Gamepad.current).
+    /// Complètement isolé du clavier.
+    /// </summary>
+    private PlayerInputData TraiterInputsGamepad()
+    {
+        Gamepad gamepad = Gamepad.current;
+        if (gamepad == null) return new PlayerInputData();
+
+        Vector2 stick = gamepad.leftStick.ReadValue();
+        if (stick.magnitude > deadZone)
+            stick = stick.normalized * Mathf.InverseLerp(deadZone, 1f, stick.magnitude);
+        else
+            stick = Vector2.zero;
+
+        return new PlayerInputData
+        {
+            MoveDirection     = stick,
+            PlaceTowerPressed = gamepad.buttonSouth.wasPressedThisFrame, // B Switch
+            InteractPressed   = gamepad.buttonNorth.wasPressedThisFrame, // X Switch
+            PlaceTowerHeld    = gamepad.buttonSouth.isPressed,
+            InteractHeld      = gamepad.buttonNorth.isPressed,
+            LancerVagueHeld   = gamepad.buttonEast.isPressed,            // A Switch
         };
     }
 
