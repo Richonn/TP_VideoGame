@@ -17,10 +17,12 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D _rb;
     private InputManager.PlayerInputData _input;
+    private Animator _animator;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     private void Deplacer()
     {
+        // _animator.SetBool("isRunning", true); > FIX when player stop running
         Vector2 nouvellePos = _rb.position
             + _input.MoveDirection * moveSpeed * Time.fixedDeltaTime;
 
@@ -54,6 +57,7 @@ public class PlayerController : MonoBehaviour
         nouvellePos.y = Mathf.Clamp(nouvellePos.y, minY, maxY);
 
         _rb.MovePosition(nouvellePos);
+
     }
 
     private void OnPlaceTower()
