@@ -10,18 +10,25 @@ using System;
 ///   - Inflige des dégâts à la base à l'arrivée, puis se détruit
 ///   - Peut prendre des dégâts des tours
 ///
+/// Types disponibles (configurés sur le prefab) :
+///   Rush    — rapide, fragile, fonce droit au but
+///   Tank    — lent, très résistant, dégâts élevés à la base
+///   Flanker — vitesse moyenne, évite les tours (A* pondéré, à venir)
+///
 /// Requis sur le prefab : Rigidbody2D (Kinematic), Collider2D (Trigger)
 /// Le GameObject de la base doit avoir le tag "Base".
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyAI : MonoBehaviour
 {
-    // ── Événement ─────────────────────────────────────────────────────────────
-    /// <summary>Déclenché à la mort d'un ennemi (WaveManager l'écoute).</summary>
-    public static event Action OnEnnemiMort;
+    // ── Type d'ennemi ─────────────────────────────────────────────────────────
+    public enum EnemyType { Rush, Tank, Flanker }
 
-    // ── Inspector ─────────────────────────────────────────────────────────────
-    [Header("Stats")]
+    [Header("Type")]
+    [SerializeField] public EnemyType type = EnemyType.Rush;
+
+    // ── Inspector (écrasé par ConfigurerSelonType) ────────────────────────────
+    [Header("Stats de base")]
     [SerializeField] private float vitesse    = 2f;
     [SerializeField] private int   pvMax      = 3;
     [SerializeField] private int   degatsBase = 1;
@@ -30,8 +37,13 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("Distance minimale pour valider l'atteinte d'un waypoint.")]
     [SerializeField] private float toleranceWaypoint = 0.15f;
 
+    // ── Événement ─────────────────────────────────────────────────────────────
+    /// <summary>Déclenché à la mort d'un ennemi (WaveManager l'écoute).</summary>
+    public static event Action OnEnnemiMort;
+
     // ── État interne ──────────────────────────────────────────────────────────
     private int            _pvActuels;
+    private int            _recompenseOr;
     private List<Vector2>  _chemin;
     private int            _indexWaypoint;
     private Transform      _cibleBase;
@@ -42,6 +54,7 @@ public class EnemyAI : MonoBehaviour
     // ── Lifecycle ─────────────────────────────────────────────────────────────
     void Awake()
     {
+        ConfigurerSelonType();
         _pvActuels = pvMax;
     }
 
@@ -69,12 +82,37 @@ public class EnemyAI : MonoBehaviour
         SuivreChemin();
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────────
+    // ── Configuration par type ────────────────────────────────────────────────
+    private void ConfigurerSelonType()
+    {
+        switch (type)
+        {
+            case EnemyType.Rush:
+                vitesse       = 3.5f;
+                pvMax         = 2;
+                degatsBase    = 1;
+                _recompenseOr = 10;
+                break;
 
-    /// <summary>
-    /// Calcule (ou recalcule) le chemin A* vers la base.
-    /// Appelé au spawn et à chaque modification de la grille.
-    /// </summary>
+            case EnemyType.Tank:
+                vitesse       = 1f;
+                pvMax         = 10;
+                degatsBase    = 3;
+                _recompenseOr = 25;
+                break;
+
+            case EnemyType.Flanker:
+                vitesse       = 2.5f;
+                pvMax         = 4;
+                degatsBase    = 1;
+                _recompenseOr = 15;
+                break;
+        }
+
+        // Sprites différents par type — pas de teinte supplémentaire nécessaire
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────────
     public void CalculerChemin()
     {
         if (_cibleBase == null || AStarPathfinder.Instance == null) return;
@@ -131,6 +169,12 @@ public class EnemyAI : MonoBehaviour
 
     private void Mourir()
     {
+        if (ResourceManager.Instance != null)
+        {
+            ResourceManager.Instance.Ajouter(1, _recompenseOr);
+            ResourceManager.Instance.Ajouter(2, _recompenseOr);
+        }
+
         OnEnnemiMort?.Invoke();
         Destroy(gameObject);
     }

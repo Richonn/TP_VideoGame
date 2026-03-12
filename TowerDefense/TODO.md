@@ -88,9 +88,14 @@
 - [ ] Minimap par rendu de caméra (optionnel, vaut jusqu'à 9 pts)
 
 ### 🤖 IA avancée — Membre 1 `/20`
-- [ ] Comportements variés : rush, tank, contournement (au moins 2 niveaux de difficulté)
+- [x] Comportements variés : rush, tank, contournement (au moins 2 niveaux de difficulté)
+  > ✅ `EnemyAI.cs` — enum `EnemyType` (Rush / Tank / Flanker), stats configurées par type
+  > Rush : rapide (3.5), fragile (2PV), 10or | Tank : lent (1), résistant (10PV), 25or | Flanker : moyen (2.5), 4PV, 15or
+  > Récompense or distribuée aux deux joueurs à la mort via `ResourceManager`
+- [x] Au moins deux niveaux de difficulté
+  > ✅ `WaveManager.cs` — distribution progressive : Rush (v1-2), Rush+Tank (v3-4), Rush+Tank+Flanker (v5+)
+- [ ] Flanker : contournement actif des tours (A* pondéré — à implémenter)
 - [ ] La planification ne présente pas de bugs majeurs
-- [ ] Au moins deux niveaux de difficulté
 - [ ] Analyse dans le rapport
 
 ### ⭐ Personnalisation des entrées — Membre 2 `/20`
