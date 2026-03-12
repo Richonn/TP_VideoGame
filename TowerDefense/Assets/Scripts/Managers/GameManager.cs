@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     {
         CurrentWave = 0;
         SceneManager.sceneLoaded += OnGameSceneLoaded;
-        SceneManager.LoadScene("Game");
+        ChargerViaEcranChargement("Game");
     }
 
     private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -147,12 +147,18 @@ public class GameManager : MonoBehaviour
         OnPhaseChanged?.Invoke(CurrentState);
         OnGameEnded?.Invoke(victory);
 
-        SceneManager.LoadScene("GameOver");
+        ChargerViaEcranChargement("GameOver");
     }
 
     public void ReturnToMenu()
     {
         CurrentState = GameState.Menu;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void ChargerViaEcranChargement(string scene)
+    {
+        LoadingScreenController.SceneCible = scene;
+        SceneManager.LoadScene("Loading");
     }
 }

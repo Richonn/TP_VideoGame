@@ -22,7 +22,7 @@
 - [x] Phase de **défense** (vagues d'ennemis actives, joueurs se baladent)
 - [x] **Menu de pause** (Escape → pause, boutons : Resume / Settings / Controls / Restart / Back to Menu / Quit)
 - [x] Retour au menu principal possible depuis la pause
-- [ ] **Écran de chargement** (3 pts) + progression du chargement (5 pts) → `SceneManager.LoadSceneAsync`
+- [x] **Écran de chargement** (3 pts) + progression du chargement (5 pts) → `LoadingScreenController.cs`, délai minimum 2s, barre de progression animée
 
 ### 🕹️ Contrôle des agents (multijoueur local) `/15`
 - [x] Mouvement top-down Joueur 1 (clavier — ZQSD)
@@ -75,7 +75,7 @@
 - [x] Sprites ennemis et tours (assets Tiny Sword)
 - [x] Séparation logique jeu / affichage UI / données (GameManager, HUDManager, ResourceManager)
 - [x] Configurations modifiables par menu (rebind touches via Controls dans pause)
-- [ ] **Écran de chargement** ← manque (voir Flot d'application)
+- [x] **Écran de chargement** (voir Flot d'application)
 
 ### 🌫️ Rendu interactif avancé — Membre 3 `/20`
 - [ ] **Brouillard de guerre** (culling logique)
