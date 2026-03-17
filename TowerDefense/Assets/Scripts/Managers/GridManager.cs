@@ -20,6 +20,10 @@ public class GridManager : MonoBehaviour
     public int Width => width;
     public int Height => height;
     public float CellSize => cellSize;
+    public Vector2 GridOrigin => gridOrigin;
+    public float GridWorldWidth => width * cellSize;
+    public float GridWorldHeight => height * cellSize;
+    public Vector2 GridWorldCenter => gridOrigin + new Vector2(GridWorldWidth * 0.5f, GridWorldHeight * 0.5f);
 
     private Node[,] _grid;
 

@@ -64,6 +64,9 @@ public class FogOfWarManager : MonoBehaviour
                 go.transform.position = new Vector3(node.worldPosition.x, node.worldPosition.y, 0f);
                 go.transform.localScale = new Vector3(size, size, 1f);
 
+                int fogLayer = LayerMask.NameToLayer("Ignore Raycast");
+                if (fogLayer >= 0) go.layer = fogLayer;
+
                 SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
                 sr.sprite = _blockSprite;
                 sr.color = fogColor;

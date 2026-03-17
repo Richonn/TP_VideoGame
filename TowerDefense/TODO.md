@@ -85,7 +85,8 @@
 - [x] Le culling logique est présenté visuellement
   > ✅ Tuiles animées (fondu alpha progressif), ennemis cachés via SpriteRenderer.enabled
 - [ ] Les éléments importants sont rendus au travers des obstacles (optionnel)
-- [ ] Minimap par rendu de caméra (optionnel, vaut jusqu'à 9 pts)
+- [x] Minimap par rendu de caméra (optionnel, vaut jusqu'à 9 pts)
+  > ✅ `MinimapController.cs` — camera orthographique → RenderTexture → RawImage UI, points P1 (bleu) / P2 (rouge), fog exclu via layer Ignore Raycast
 
 ### 🤖 IA avancée — Membre 1 `/20`
 - [x] Comportements variés : rush, tank, contournement (au moins 2 niveaux de difficulté)
@@ -103,9 +104,12 @@
 - [x] Le schéma de contrôle passe par un gestionnaire codé par l'équipe (`KeyBindingManager`)
 - [x] Les touches peuvent être réassignées (clavier P1 — `ControlsRebindingUI`)
 - [x] Les propriétés sont enregistrées et récupérées (`PlayerPrefs`)
-- [ ] Le comportement des axes peut être personnalisé (sensibilité, inversion, dead zone exposée au joueur)
-- [ ] Chaque joueur peut choisir son contrôleur (P1/P2 hardcodés actuellement)
-- [ ] Rebind des boutons manette (P2)
+- [x] Le comportement des axes peut être personnalisé (sensibilité, dead zone exposée au joueur)
+  > ✅ Sliders − / + dans le menu Controls → Dead Zone [0–0.5] et Sensitivity [0.1–3], sauvegardés via PlayerPrefs
+- [x] Chaque joueur peut choisir son contrôleur
+  > ✅ Boutons Keyboard / Gamepad par joueur dans Controls, sauvegardés via PlayerPrefs
+- [x] Rebind des boutons manette (P2)
+  > ✅ Section "GAMEPAD — PLAYER 2" dans Controls, même flow que clavier (attente appui bouton, timeout 5s)
 
 ### 📄 Document TP2
 - [ ] Diagramme du flot d'application

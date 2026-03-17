@@ -5,12 +5,19 @@ public class KeyBindingManager : MonoBehaviour
 {
     public static KeyBindingManager Instance { get; private set; }
 
+    public enum GamepadButtonType
+    {
+        South, North, East, West,
+        LeftShoulder, RightShoulder,
+        Start, Select
+    }
+
     [System.Serializable]
     public struct KeyBinding
     {
         public string ActionName;
         public KeyCode KeyboardKey;
-        public string GamepadButton;
+        public GamepadButtonType GamepadButton;
     }
 
     private Dictionary<string, KeyBinding> keyBindings = new Dictionary<string, KeyBinding>();
@@ -28,22 +35,18 @@ public class KeyBindingManager : MonoBehaviour
 
     private static readonly Dictionary<ActionType, KeyBinding> DefaultBindings = new Dictionary<ActionType, KeyBinding>()
     {
-        { ActionType.Move_Up, new KeyBinding { ActionName = "Move_Up", KeyboardKey = KeyCode.Z, GamepadButton = "Up" } },
-        { ActionType.Move_Down, new KeyBinding { ActionName = "Move_Down", KeyboardKey = KeyCode.S, GamepadButton = "Down" } },
-        { ActionType.Move_Left, new KeyBinding { ActionName = "Move_Left", KeyboardKey = KeyCode.Q, GamepadButton = "Left" } },
-        { ActionType.Move_Right, new KeyBinding { ActionName = "Move_Right", KeyboardKey = KeyCode.D, GamepadButton = "Right" } },
-        { ActionType.PlaceTower, new KeyBinding { ActionName = "PlaceTower", KeyboardKey = KeyCode.E, GamepadButton = "Button0" } },
-        { ActionType.Interact, new KeyBinding { ActionName = "Interact", KeyboardKey = KeyCode.F, GamepadButton = "Button3" } },
-        { ActionType.LaunchWave, new KeyBinding { ActionName = "LaunchWave", KeyboardKey = KeyCode.Tab, GamepadButton = "Button1" } }
+        { ActionType.Move_Up, new KeyBinding { ActionName = "Move_Up", KeyboardKey = KeyCode.Z, GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Down, new KeyBinding { ActionName = "Move_Down", KeyboardKey = KeyCode.S, GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Left, new KeyBinding { ActionName = "Move_Left", KeyboardKey = KeyCode.Q, GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Right, new KeyBinding { ActionName = "Move_Right", KeyboardKey = KeyCode.D, GamepadButton = GamepadButtonType.South } },
+        { ActionType.PlaceTower, new KeyBinding { ActionName = "PlaceTower", KeyboardKey = KeyCode.E, GamepadButton = GamepadButtonType.South } },
+        { ActionType.Interact, new KeyBinding { ActionName = "Interact", KeyboardKey = KeyCode.F, GamepadButton = GamepadButtonType.North } },
+        { ActionType.LaunchWave, new KeyBinding { ActionName = "LaunchWave", KeyboardKey = KeyCode.Tab, GamepadButton = GamepadButtonType.East } }
     };
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
         LoadAllBindings();
@@ -53,28 +56,25 @@ public class KeyBindingManager : MonoBehaviour
     {
         keyBindings.Clear();
 
-        foreach (var defaultBinding in DefaultBindings)
+        foreach (var pair in DefaultBindings)
         {
-            string key = $"KeyBinding_{defaultBinding.Value.ActionName}";
+            KeyBinding binding = pair.Value;
 
-            if (PlayerPrefs.HasKey(key))
+            string kbKey = $"KeyBinding_{pair.Value.ActionName}";
+            if (PlayerPrefs.HasKey(kbKey))
             {
-                string savedValue = PlayerPrefs.GetString(key);
-                if (System.Enum.TryParse(savedValue, out KeyCode parsedKey))
-                {
-                    KeyBinding binding = defaultBinding.Value;
+                if (System.Enum.TryParse(PlayerPrefs.GetString(kbKey), out KeyCode parsedKey))
                     binding.KeyboardKey = parsedKey;
-                    keyBindings[defaultBinding.Value.ActionName] = binding;
-                }
-                else
-                {
-                    keyBindings[defaultBinding.Value.ActionName] = defaultBinding.Value;
-                }
             }
-            else
+
+            string gpKey = $"GamepadBinding_{pair.Value.ActionName}";
+            if (PlayerPrefs.HasKey(gpKey))
             {
-                keyBindings[defaultBinding.Value.ActionName] = defaultBinding.Value;
+                if (System.Enum.TryParse(PlayerPrefs.GetString(gpKey), out GamepadButtonType parsedBtn))
+                    binding.GamepadButton = parsedBtn;
             }
+
+            keyBindings[pair.Value.ActionName] = binding;
         }
     }
 
@@ -83,7 +83,6 @@ public class KeyBindingManager : MonoBehaviour
         string actionName = action.ToString();
         if (keyBindings.ContainsKey(actionName))
             return keyBindings[actionName];
-
         return DefaultBindings[action];
     }
 
@@ -93,22 +92,26 @@ public class KeyBindingManager : MonoBehaviour
         KeyBinding binding = keyBindings.ContainsKey(actionName) ? keyBindings[actionName] : DefaultBindings[action];
         binding.KeyboardKey = newKey;
         keyBindings[actionName] = binding;
-        SaveBinding(actionName, newKey);
+        PlayerPrefs.SetString($"KeyBinding_{actionName}", newKey.ToString());
+        PlayerPrefs.Save();
     }
 
-    private void SaveBinding(string actionName, KeyCode key)
+    public void SetGamepadBinding(ActionType action, GamepadButtonType button)
     {
-        string prefKey = $"KeyBinding_{actionName}";
-        PlayerPrefs.SetString(prefKey, key.ToString());
+        string actionName = action.ToString();
+        KeyBinding binding = keyBindings.ContainsKey(actionName) ? keyBindings[actionName] : DefaultBindings[action];
+        binding.GamepadButton = button;
+        keyBindings[actionName] = binding;
+        PlayerPrefs.SetString($"GamepadBinding_{actionName}", button.ToString());
         PlayerPrefs.Save();
     }
 
     public void ResetAllBindings()
     {
-        foreach (var defaultBinding in DefaultBindings)
+        foreach (var pair in DefaultBindings)
         {
-            string key = $"KeyBinding_{defaultBinding.Value.ActionName}";
-            PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.DeleteKey($"KeyBinding_{pair.Value.ActionName}");
+            PlayerPrefs.DeleteKey($"GamepadBinding_{pair.Value.ActionName}");
         }
         PlayerPrefs.Save();
         LoadAllBindings();
@@ -131,6 +134,22 @@ public class KeyBindingManager : MonoBehaviour
                 if (name.StartsWith("KEYPAD"))
                     name = "KP_" + name.Substring(6);
                 return name;
+        }
+    }
+
+    public static string GetGamepadButtonDisplayName(GamepadButtonType btn)
+    {
+        switch (btn)
+        {
+            case GamepadButtonType.South: return "A";
+            case GamepadButtonType.North: return "Y";
+            case GamepadButtonType.East: return "B";
+            case GamepadButtonType.West: return "X";
+            case GamepadButtonType.LeftShoulder: return "LB";
+            case GamepadButtonType.RightShoulder: return "RB";
+            case GamepadButtonType.Start: return "START";
+            case GamepadButtonType.Select: return "SELECT";
+            default: return btn.ToString().ToUpper();
         }
     }
 

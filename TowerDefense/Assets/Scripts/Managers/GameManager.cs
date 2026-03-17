@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
 
         AdjustCameraZoom();
         InitializePauseMenu();
+        InitializeMinimap();
         EnterPrepPhase();
     }
 
@@ -69,6 +70,15 @@ public class GameManager : MonoBehaviour
         {
             GameObject go = new GameObject("PauseMenuManager");
             go.AddComponent<PauseMenuController>();
+        }
+    }
+
+    private void InitializeMinimap()
+    {
+        if (MinimapController.Instance == null)
+        {
+            GameObject go = new GameObject("MinimapController");
+            go.AddComponent<MinimapController>();
         }
     }
 
@@ -121,7 +131,7 @@ public class GameManager : MonoBehaviour
         OnPhaseChanged?.Invoke(CurrentState);
         OnGameEnded?.Invoke(victory);
 
-        LoadWithLoadingScreen("GameOver");
+        SceneManager.LoadScene("GameOver");
     }
 
     public void ReturnToMenu()

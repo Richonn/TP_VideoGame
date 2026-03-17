@@ -20,13 +20,7 @@ public class PauseMenuController : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-    }
-
-    void Start()
-    {
-        if (pauseMenuCanvas == null)
-            BuildUI();
-
+        BuildUI();
         pauseMenuCanvas.enabled = false;
     }
 
@@ -63,6 +57,15 @@ public class PauseMenuController : MonoBehaviour
     {
         _mainPanel?.SetActive(false);
         _controlsPanel?.SetActive(true);
+        if (_controlsPanel != null)
+        {
+            ControlsRebindingUI rebindUI = _controlsPanel.GetComponentInChildren<ControlsRebindingUI>();
+            rebindUI?.RefreshUI();
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_controlsPanel.GetComponent<RectTransform>());
+            ScrollRect sr = _controlsPanel.GetComponentInChildren<ScrollRect>();
+            if (sr != null) sr.verticalNormalizedPosition = 1f;
+        }
     }
 
     private void OnSettings() { }
@@ -96,8 +99,15 @@ public class PauseMenuController : MonoBehaviour
 
     private void BuildUI()
     {
+        if (pauseMenuCanvas != null)
+        {
+            pauseMenuCanvas.enabled = false;
+            Destroy(pauseMenuCanvas.gameObject);
+        }
+
         GameObject canvasGO = new GameObject("PauseCanvas");
         pauseMenuCanvas = canvasGO.AddComponent<Canvas>();
+        pauseMenuCanvas.enabled = false;
         pauseMenuCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         pauseMenuCanvas.sortingOrder = 100;
         canvasGO.AddComponent<GraphicRaycaster>();
@@ -115,7 +125,7 @@ public class PauseMenuController : MonoBehaviour
 
         _mainPanel = BuildMainPanel(canvasGO);
         _controlsPanel = BuildControlsPanel(canvasGO);
-        _controlsPanel.SetActive(false);
+        _controlsPanel?.SetActive(false);
     }
 
     private GameObject BuildMainPanel(GameObject parent)
@@ -142,30 +152,61 @@ public class PauseMenuController : MonoBehaviour
 
     private GameObject BuildControlsPanel(GameObject parent)
     {
-        GameObject panel = CreatePanel(parent, 700, 620);
+        GameObject panel = CreatePanel(parent, 760, 700);
+        try
+        {
 
         VerticalLayoutGroup vlg = panel.AddComponent<VerticalLayoutGroup>();
         vlg.spacing = 8;
-        vlg.padding = new RectOffset(30, 30, 20, 20);
+        vlg.padding = new RectOffset(24, 24, 20, 20);
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
         vlg.childAlignment = TextAnchor.UpperCenter;
 
         AddTitle(panel, "CONTROLS");
 
-        GameObject rebindZone = new GameObject("RebindZone");
-        rebindZone.transform.SetParent(panel.transform, false);
-        LayoutElement zoneLE = rebindZone.AddComponent<LayoutElement>();
-        zoneLE.flexibleHeight = 1;
-        zoneLE.flexibleWidth = 1;
+        GameObject scrollViewGO = new GameObject("ScrollView");
+        scrollViewGO.transform.SetParent(panel.transform, false);
+        LayoutElement scrollLE = scrollViewGO.AddComponent<LayoutElement>();
+        scrollLE.flexibleHeight = 1;
+        scrollLE.flexibleWidth = 1;
+        scrollViewGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        ScrollRect scrollRect = scrollViewGO.AddComponent<ScrollRect>();
+        scrollRect.horizontal = false;
+        scrollRect.vertical = true;
+        scrollRect.scrollSensitivity = 30f;
 
-        VerticalLayoutGroup zoneVLG = rebindZone.AddComponent<VerticalLayoutGroup>();
-        zoneVLG.spacing = 6;
-        zoneVLG.childForceExpandWidth = true;
-        zoneVLG.childForceExpandHeight = false;
+        GameObject viewport = new GameObject("Viewport");
+        viewport.transform.SetParent(scrollViewGO.transform, false);
+        viewport.AddComponent<Image>().color = Color.white;
+        Mask mask = viewport.AddComponent<Mask>();
+        mask.showMaskGraphic = false;
+        RectTransform vpRT = viewport.GetComponent<RectTransform>();
+        vpRT.anchorMin = Vector2.zero;
+        vpRT.anchorMax = Vector2.one;
+        vpRT.offsetMin = Vector2.zero;
+        vpRT.offsetMax = Vector2.zero;
+        scrollRect.viewport = vpRT;
 
-        ControlsRebindingUI rebindUI = rebindZone.AddComponent<ControlsRebindingUI>();
-        rebindUI.SetRebindingContainer(rebindZone.transform);
+        GameObject content = new GameObject("Content");
+        content.transform.SetParent(viewport.transform, false);
+        VerticalLayoutGroup contentVLG = content.AddComponent<VerticalLayoutGroup>();
+        contentVLG.spacing = 4;
+        contentVLG.childForceExpandWidth = true;
+        contentVLG.childForceExpandHeight = false;
+        ContentSizeFitter csf = content.AddComponent<ContentSizeFitter>();
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        csf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        RectTransform contentRT = content.GetComponent<RectTransform>();
+        contentRT.anchorMin = new Vector2(0f, 1f);
+        contentRT.anchorMax = new Vector2(1f, 1f);
+        contentRT.pivot = new Vector2(0.5f, 1f);
+        contentRT.offsetMin = Vector2.zero;
+        contentRT.offsetMax = Vector2.zero;
+        scrollRect.content = contentRT;
+
+        ControlsRebindingUI rebindUI = content.AddComponent<ControlsRebindingUI>();
+        rebindUI.SetRebindingContainer(content.transform);
 
         GameObject bottom = new GameObject("Bottom");
         bottom.transform.SetParent(panel.transform, false);
@@ -180,12 +221,19 @@ public class PauseMenuController : MonoBehaviour
 
         CreateFixedButton(bottom, "Reset Defaults", new Color(0.6f, 0.15f, 0.15f, 1f), 220, () =>
         {
+            InputManager.Instance?.ResetToDefaults();
             KeyBindingManager.Instance?.ResetAllBindings();
             rebindUI.RefreshUI();
         });
         CreateFixedButton(bottom, "Back", new Color(0.15f, 0.45f, 0.15f, 1f), 160, ShowMainPanel);
 
         return panel;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[PauseMenu] BuildControlsPanel FAILED: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+            return panel;
+        }
     }
 
     private GameObject CreatePanel(GameObject parent, float width, float height)
