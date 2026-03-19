@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private float cellSize = 2f;
 
     [Header("Obstacles")]
-    [SerializeField] private LayerMask obstacleLayer;
+    [SerializeField] private string obstaclesSortingLayer = "Obstacles";
 
     public static event Action OnGridUpdated;
 
@@ -26,12 +26,31 @@ public class GridManager : MonoBehaviour
     public Vector2 GridWorldCenter => gridOrigin + new Vector2(GridWorldWidth * 0.5f, GridWorldHeight * 0.5f);
 
     private Node[,] _grid;
+    private List<SpriteRenderer> _obstacleSpritesCached;
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        CacheObstacleSprites();
         InitGrid();
+    }
+
+    private void CacheObstacleSprites()
+    {
+        _obstacleSpritesCached = new List<SpriteRenderer>();
+        SpriteRenderer[] allSprites = FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None);
+        
+        
+        foreach (SpriteRenderer sprite in allSprites)
+        {
+            
+            if (sprite.sortingLayerName == obstaclesSortingLayer)
+            {
+                _obstacleSpritesCached.Add(sprite);
+                Debug.Log($"[Grid Manager] ✓ Cached obstacle sprite: {sprite.gameObject.name}");
+            }
+        }
     }
 
     private void InitGrid()
@@ -43,14 +62,38 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Vector2 pos = CellCenter(x, y);
-                bool walkable = !Physics2D.OverlapCircle(pos, cellSize * 0.4f, obstacleLayer);
+                bool walkable = !HasObstacleSpriteAtPosition(pos);
                 _grid[x, y] = new Node(walkable, pos, x, y);
             }
         }
     }
 
+    private bool HasObstacleSpriteAtPosition(Vector2 pos)
+    {
+        if (_obstacleSpritesCached == null || _obstacleSpritesCached.Count == 0)
+            return false;
+
+        // Create a small check area
+        Vector3 checkPos = new Vector3(pos.x, pos.y, 0);
+        Bounds checkBounds = new Bounds(checkPos, Vector3.one * cellSize * 0.8f);
+        
+        foreach (SpriteRenderer sprite in _obstacleSpritesCached)
+        {
+            if (sprite == null) continue;
+            
+            Collider2D collider = sprite.GetComponent<Collider2D>();
+            if (collider != null && collider.bounds.Intersects(checkBounds))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     public void UpdateGrid()
     {
+        CacheObstacleSprites();
         InitGrid();
         OnGridUpdated?.Invoke();
     }

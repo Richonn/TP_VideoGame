@@ -43,6 +43,15 @@ public class PlayerController : MonoBehaviour
         Vector2 newPos = _rb.position + _input.MoveDirection * moveSpeed * Time.fixedDeltaTime;
         newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
         newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
+        
+        // Check if the new position is on a walkable grid cell
+        if (GridManager.Instance != null) {
+            Node targetNode = GridManager.Instance.WorldToNode(newPos);
+            if (targetNode == null || !targetNode.walkable) {
+                return; // Don't move if the cell is not walkable
+            }
+        }
+        
         _rb.MovePosition(newPos);
     }
 
