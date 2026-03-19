@@ -101,7 +101,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3, y: 3}
+    oldSize: {x: 0.41145834, y: 0.46354166}
     newSize: {x: 3, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -122,10 +122,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   type: 1
-  vitesse: 2
-  pvMax: 3
-  degatsBase: 1
-  toleranceWaypoint: 0.15
+  speed: 2
+  maxHP: 3
+  baseDamage: 1
+  waypointTolerance: 0.15
 --- !u!212 &-6211976008554405891
 SpriteRenderer:
   serializedVersion: 2
