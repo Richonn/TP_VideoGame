@@ -14,7 +14,7 @@ public class HUDManager : MonoBehaviour
 
     [Header("Shared HUD")]
     [SerializeField] private TMP_Text waveText;
-    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text helpText;
     [SerializeField] private TMP_Text phaseText;
     [SerializeField] private Image phaseImage;
     [SerializeField] private Image baseHPBar;
@@ -28,7 +28,6 @@ public class HUDManager : MonoBehaviour
     {
         GameManager.OnPhaseChanged += OnPhaseChanged;
         GameManager.OnWaveChanged += OnWaveChanged;
-        GameManager.OnPrepTimerUpdated += OnTimerUpdated;
         BaseController.OnHPChanged += OnHPChanged;
         ResourceManager.OnResourcesChanged += OnResourcesChanged;
     }
@@ -50,7 +49,6 @@ public class HUDManager : MonoBehaviour
     {
         GameManager.OnPhaseChanged -= OnPhaseChanged;
         GameManager.OnWaveChanged -= OnWaveChanged;
-        GameManager.OnPrepTimerUpdated -= OnTimerUpdated;
         BaseController.OnHPChanged -= OnHPChanged;
         ResourceManager.OnResourcesChanged -= OnResourcesChanged;
     }
@@ -68,8 +66,8 @@ public class HUDManager : MonoBehaviour
         if (phaseText != null)
             phaseText.text = state switch
             {
-                GameManager.GameState.Preparation => "PRÉPARATION",
-                GameManager.GameState.Defense => "DÉFENSE",
+                GameManager.GameState.Preparation => "PREPARE THE BASE",
+                GameManager.GameState.Defense => "DEFEND",
                 _ => ""
             };
 
@@ -80,20 +78,20 @@ public class HUDManager : MonoBehaviour
                 GameManager.GameState.Defense => defenseSprite,
                 _ => prepSprite
             };
+
+        if (helpText != null)
+            helpText.text = state switch
+            {
+                GameManager.GameState.Preparation => "Hold Tab or B to start wave",
+                GameManager.GameState.Defense => "Wait the end of the wave",
+                _ => ""
+            };
     }
 
     private void OnWaveChanged(int wave)
     {
         if (waveText != null)
             waveText.text = $"Vague {wave}";
-    }
-
-    private void OnTimerUpdated(float time)
-    {
-        if (timerText == null) return;
-        timerText.text = time > 0f
-            ? $"Prochaine vague dans {Mathf.CeilToInt(time)}s"
-            : "Maintien Tab / B pour lancer";
     }
 
     private void OnHPChanged(int currentHP, int maxHP)

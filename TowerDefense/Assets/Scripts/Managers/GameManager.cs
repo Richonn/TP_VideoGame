@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
 
     public static event Action<GameState> OnPhaseChanged;
     public static event Action<int> OnWaveChanged;
-    public static event Action<float> OnPrepTimerUpdated;
     public static event Action<bool> OnGameEnded;
 
     private bool _prepRunning;
@@ -30,10 +29,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Update()
-    {
-        if (_prepRunning) TickPrepTimer();
-    }
+    void Update() {}
 
     public void StartGame()
     {
@@ -92,19 +88,6 @@ public class GameManager : MonoBehaviour
         InputManager.Instance?.SetPlayerInputEnabled(2, true);
 
         OnPhaseChanged?.Invoke(CurrentState);
-    }
-
-    private void TickPrepTimer()
-    {
-        PrepTimeRemaining -= Time.deltaTime;
-
-        if (PrepTimeRemaining <= 0f)
-        {
-            PrepTimeRemaining = 0f;
-            _prepRunning = false;
-        }
-
-        OnPrepTimerUpdated?.Invoke(PrepTimeRemaining);
     }
 
     public void EnterDefensePhase()

@@ -171,7 +171,7 @@ TextureImporter:
       name: Lancer_Idle_1
       rect:
         serializedVersion: 2
-        x: 434
+        x: 432
         y: 123
         width: 70
         height: 149
@@ -259,10 +259,10 @@ TextureImporter:
       name: Lancer_Idle_5
       rect:
         serializedVersion: 2
-        x: 1717
-        y: 122
-        width: 65
-        height: 150
+        x: 1716
+        y: 121
+        width: 68
+        height: 153
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
