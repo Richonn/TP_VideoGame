@@ -8,7 +8,8 @@ public class Node
 
     public int gCost;
     public int hCost;
-    public int fCost => gCost + hCost;
+    public int fCost => (gCost == int.MaxValue) ? int.MaxValue : gCost + hCost;
+    // public int fCost => gCost + hCost;
 
     public Node parent;
 

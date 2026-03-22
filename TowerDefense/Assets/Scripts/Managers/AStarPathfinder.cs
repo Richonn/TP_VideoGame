@@ -54,6 +54,7 @@ public class AStarPathfinder : MonoBehaviour
                 int moveCost = diagonal ? COST_DIAGONAL : COST_ORTHO;
                 int penalty = towerPenalty > 0 ? CalculateTowerPenalty(neighbor, towerNodes, towerPenalty) : 0;
                 int newGCost = current.gCost + moveCost + penalty;
+                if (newGCost < 0) newGCost = int.MaxValue;
 
                 if (newGCost < neighbor.gCost)
                 {

@@ -51,8 +51,17 @@ public class PlayerController : MonoBehaviour
                 return; // Don't move if the cell is not walkable
             }
         }
-        
+        // Separately block the player from walking onto the base
+        if (IsBaseAtPosition(newPos))
+            return;
+
         _rb.MovePosition(newPos);
+    }
+
+    private bool IsBaseAtPosition(Vector2 pos)
+    {
+        Collider2D hit = Physics2D.OverlapCircle(pos, 0.1f);
+        return hit != null && hit.CompareTag("Base");
     }
 
     private void OnPlaceTower()

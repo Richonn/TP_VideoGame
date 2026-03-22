@@ -94,7 +94,14 @@ public class GridManager : MonoBehaviour
     public void UpdateGrid()
     {
         CacheObstacleSprites();
-        InitGrid();
+        // InitGrid();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2 pos = CellCenter(x, y);
+                _grid[x, y].walkable = !HasObstacleSpriteAtPosition(pos);
+            }
+        }
         OnGridUpdated?.Invoke();
     }
 

@@ -6,6 +6,7 @@ using System;
 public class EnemyAI : MonoBehaviour
 {
     public enum EnemyType { Rush, Tank, Flanker }
+    public enum EnemyState { WAITING, MOVING, BLOCKED, ARRIVED, DEAD}
 
     [Header("Type")]
     [SerializeField] public EnemyType type = EnemyType.Rush;
@@ -14,18 +15,18 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float speed = 2f;
     [SerializeField] private int maxHP = 3;
     [SerializeField] private int baseDamage = 1;
+    [SerializeField] private EnemyState state = EnemyState.WAITING;
 
     [Header("Navigation")]
     [SerializeField] private float waypointTolerance = 0.15f;
 
-    public static event Action OnEnemyDied;
+    public static event Action OnEnemyDied; // enemy state dead
 
     private int _currentHP;
     private int _goldReward;
     private List<Vector2> _path;
     private int _waypointIndex;
     private Transform _baseTarget;
-    private bool _arrived;
 
     public int WaypointIndex => _waypointIndex;
 
@@ -54,8 +55,11 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (_arrived) return;
-        if (GameManager.Instance?.CurrentState != GameManager.GameState.Defense) return;
+        if (state == EnemyState.ARRIVED) return;
+        if (GameManager.Instance?.CurrentState != GameManager.GameState.Defense) {
+            state = EnemyState.WAITING;
+            return;
+        }
         FollowPath();
     }
 
@@ -103,7 +107,8 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[EnemyAI] {gameObject.name}: path blocked!");
+            state = EnemyState.BLOCKED;
+            Debug.LogWarning($"[EnemyAI] {gameObject.name}: {state}");
         }
     }
 
@@ -111,6 +116,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (_path == null || _waypointIndex >= _path.Count) return;
 
+        state = EnemyState.MOVING;
         Vector2 destination = _path[_waypointIndex];
         transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
 
@@ -122,7 +128,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (other.CompareTag("Base"))
         {
-            _arrived = true;
+            state = EnemyState.ARRIVED;
             other.GetComponent<BaseController>()?.TakeDamage(baseDamage);
             Die();
         }
@@ -139,6 +145,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (ResourceManager.Instance != null)
         {
+            state = EnemyState.DEAD;
             ResourceManager.Instance.Add(1, _goldReward);
             ResourceManager.Instance.Add(2, _goldReward);
         }
