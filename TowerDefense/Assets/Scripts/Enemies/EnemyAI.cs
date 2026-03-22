@@ -6,7 +6,7 @@ using System;
 public class EnemyAI : MonoBehaviour
 {
     public enum EnemyType { Rush, Tank, Flanker }
-    public enum EnemyState { WAITING, MOVING, BLOCKED, ARRIVED, DEAD}
+    public enum EnemyState { WAITING, MOVING, ARRIVED, BLOCKED, DEAD}
 
     [Header("Type")]
     [SerializeField] public EnemyType type = EnemyType.Rush;
@@ -15,10 +15,13 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float speed = 2f;
     [SerializeField] private int maxHP = 3;
     [SerializeField] private int baseDamage = 1;
-    [SerializeField] private EnemyState state = EnemyState.WAITING;
 
     [Header("Navigation")]
     [SerializeField] private float waypointTolerance = 0.15f;
+    [SerializeField] private float attackCooldown = 1f; // attack every 1 second
+
+    private float _attackTimer = 0f;
+    private BaseController _baseController; // cache it
 
     public static event Action OnEnemyDied; // enemy state dead
 
@@ -27,11 +30,14 @@ public class EnemyAI : MonoBehaviour
     private List<Vector2> _path;
     private int _waypointIndex;
     private Transform _baseTarget;
+    private EnemyState _state = EnemyState.WAITING;
+    private Animator _animator;
 
     public int WaypointIndex => _waypointIndex;
 
     void Awake()
     {
+        _animator = GetComponent<Animator>();
         ConfigureByType();
         _currentHP = maxHP;
     }
@@ -55,7 +61,17 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (state == EnemyState.ARRIVED) return;
+        if (state == EnemyState.ARRIVED)
+        {
+            _attackTimer -= Time.deltaTime;
+            if (_attackTimer <= 0f)
+            {
+                _baseController?.TakeDamage(baseDamage);
+                _attackTimer = attackCooldown;
+            }
+            return;
+        }
+
         if (GameManager.Instance?.CurrentState != GameManager.GameState.Defense) {
             state = EnemyState.WAITING;
             return;
@@ -86,6 +102,32 @@ public class EnemyAI : MonoBehaviour
                 _goldReward = 15;
                 break;
         }
+    }
+
+    private EnemyState state
+    {
+        get => _state;
+        set
+        {
+            if (_state == value) return;
+            _state = value;
+            UpdateAnimator();
+        }
+    }
+
+    private void UpdateAnimator()
+    {
+        int stateAnim = _state switch // idle = 0, run = 1, attack = 2
+        {
+            EnemyState.WAITING  => 0,
+            EnemyState.MOVING   => 1,
+            EnemyState.ARRIVED  => 2,
+            EnemyState.BLOCKED  => 0,
+            EnemyState.DEAD     => 0,
+            _                   => 0
+        };
+
+        _animator?.SetInteger("stateAnim", stateAnim);
     }
 
     public void RecalculatePath()
@@ -129,8 +171,9 @@ public class EnemyAI : MonoBehaviour
         if (other.CompareTag("Base"))
         {
             state = EnemyState.ARRIVED;
-            other.GetComponent<BaseController>()?.TakeDamage(baseDamage);
-            Die();
+            _baseController = other.GetComponent<BaseController>();
+            _baseController?.TakeDamage(baseDamage); // first hit
+            _attackTimer = attackCooldown;
         }
     }
 
