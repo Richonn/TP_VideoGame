@@ -13,14 +13,20 @@ public class PlayerController : MonoBehaviour
     public float minY = -10f;
     public float maxY = 10f;
 
+    [Header("UI")]
+    [SerializeField] private TowerInteractUI interactUI;
+
     private Rigidbody2D _rb;
     private InputManager.PlayerInputData _input;
     private Animator _animator;
+    private Tower _nearbyTower;
+    private bool _menuOpen = false;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        interactUI?.Init(transform);
     }
 
     void Update()
@@ -31,11 +37,55 @@ public class PlayerController : MonoBehaviour
 
         if (_input.PlaceTowerPressed) OnPlaceTower();
         if (_input.InteractPressed) OnInteract();
+        HandleTowerInteraction();
     }
 
     void FixedUpdate()
     {
-        Move();
+        if (!_menuOpen) Move();
+    }
+
+    private void HandleTowerInteraction()
+    {
+        Tower nearest = FindNearbyTower();
+
+        if (_menuOpen)
+        {
+            if (nearest == null || _input.InteractPressed)
+            {
+                _menuOpen = false;
+                interactUI?.HideAll();
+            }
+            return;
+        }
+
+        if (nearest != null)
+        {
+            _nearbyTower = nearest;
+            interactUI?.ShowPrompt(nearest);
+
+            if (_input.InteractPressed)
+            {
+                _menuOpen = true;
+                interactUI?.OpenMenu(nearest);
+            }
+        }
+        else
+        {
+            _nearbyTower = null;
+            interactUI?.HideAll();
+        }
+    }
+
+    private Tower FindNearbyTower()
+    {
+        Tower[] towers = FindObjectsByType<Tower>(FindObjectsSortMode.None);
+        foreach (Tower t in towers)
+        {
+            if (t.IsPlayerInRange(transform.position))
+                return t;
+        }
+        return null;
     }
 
     private void Move()

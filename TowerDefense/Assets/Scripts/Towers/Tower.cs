@@ -8,6 +8,11 @@ public class Tower : MonoBehaviour
     public int damage = 2;
     public float fireRate = 1f;
 
+    [Header("Interaction")]
+    public float interactRadius = 1.5f;
+    [SerializeField] private int rangeUpgradeCost = 30;
+    [SerializeField] private float rangeUpgradeAmount = 0.5f;
+
     [Header("Targeting")]
     [SerializeField] private LayerMask enemyLayer;
 
@@ -23,6 +28,25 @@ public class Tower : MonoBehaviour
             _timer = 0f;
             ShootAtEnemy();
         }
+    }
+
+    public bool IsPlayerInRange(Vector2 playerPos)
+    {
+        return Vector2.Distance(transform.position, playerPos) <= interactRadius;
+    }
+
+    public bool TryUpgradeRange(int playerIndex)
+    {
+        if (ResourceManager.Instance == null) return false;
+        if (!ResourceManager.Instance.HasEnoughResources(playerIndex, rangeUpgradeCost)) return false;
+
+        ResourceManager.Instance.Spend(playerIndex, rangeUpgradeCost);
+        range += rangeUpgradeAmount;
+
+        // Refresh the range display
+        GetComponent<TowerRangeDisplay>()?.RefreshDisplay();
+
+        return true;
     }
 
     private void ShootAtEnemy()
@@ -50,5 +74,7 @@ public class Tower : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, interactRadius);
     }
 }

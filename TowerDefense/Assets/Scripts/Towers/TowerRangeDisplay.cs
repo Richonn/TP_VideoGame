@@ -17,6 +17,13 @@ public class TowerRangeDisplay : MonoBehaviour
         CreateDashedCircle();
     }
 
+    public void RefreshDisplay()
+    {
+        foreach (Transform child in transform)
+            Destroy(child.gameObject);
+        CreateDashedCircle();
+    }
+
     private void CreateDashedCircle()
     {
         float radius = GetComponent<Tower>().range;
