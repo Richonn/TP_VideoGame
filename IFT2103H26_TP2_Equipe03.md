@@ -51,7 +51,7 @@
 
 **Chargement** — Scène dédiée avec `LoadingScreenController`. Le chargement est effectué via `SceneManager.LoadSceneAsync` avec `allowSceneActivation = false`. La barre de progression affiche le minimum entre la progression réelle de l'opération asynchrone et un délai minimum de 2 secondes, garantissant que l'écran est visible. Le pourcentage est affiché numériquement.
 
-**Préparation** — Les deux joueurs se déplacent librement et placent des tours dans leur moitié respective de la carte. Un curseur vert/rouge indique en temps réel la validité du placement. La phase se déclenche manuellement en maintenant Tab (P1) ou B (P2) pendant 1,5 secondes, représenté par une barre de progression dans le HUD.
+**Préparation** — Les deux joueurs se déplacent librement et placent des tours dans leur moitié respective de la carte. Un curseur vert/rouge indique en temps réel la validité du placement. La phase se déclenche manuellement en maintenant Tab (P1) ou B (P2) pendant 1,5 secondes. Une interaction avec une tour permet d'acceder au menu d'amélioration de la tour la plus proche.
 
 **Défense** — Les vagues d'ennemis se lancent automatiquement. Les joueurs ne peuvent plus placer de tours mais peuvent interagir avec les tours existantes (amélioration). Lorsque tous les ennemis de la vague sont éliminés, le jeu repasse en phase de préparation pour la vague suivante. Le mode est sans fin : le jeu continue jusqu'à la destruction de la base.
 
@@ -74,17 +74,17 @@
 │  ProcessGamepadInput()   ◄── Gamepad.all[index]     │
 │                                                     │
 │  → PlayerInputData { MoveDirection, PlaceTower,     │
-│                       Interact, LaunchWave }         │
+│                       Interact, LaunchWave }        │
 └───────────────┬─────────────────────┬───────────────┘
-                │ GetInput(1)          │ GetInput(2)
+                │ GetInput(1)         │ GetInput(2)
                 ▼                     ▼
-       ┌────────────────┐   ┌────────────────┐
+       ┌─────────────────┐   ┌────────────────┐
        │ PlayerController│   │ PlayerController│
-       │    (Joueur 1)  │   │    (Joueur 2)  │
-       ├────────────────┤   ├────────────────┤
-       │ - Mouvement    │   │ - Mouvement    │
-       │ - Interaction  │   │ - Interaction  │
-       └────────┬───────┘   └────────┬───────┘
+       │    (Joueur 1)   │   │    (Joueur 2)  │
+       ├─────────────────┤   ├────────────────┤
+       │ - Mouvement     │   │ - Mouvement    │
+       │ - Interaction   │   │ - Interaction  │
+       └────────┬────────┘   └────────┬───────┘
                 │                    │
                 ▼                    ▼
        ┌────────────────┐   ┌────────────────┐
@@ -136,20 +136,20 @@ L'ennemi possède cinq états distincts :
               ┌──────────────────────────────────────────┐
               │              Phase Defense               │
               ▼                                          │
-          WAITING                                        │
+            WAITING                                      │
               │  Phase Defense démarre                   │
               ▼                                          │
           MOVING ◄──────────────────────────────┐        │
-              │  OnTriggerEnter2D("Base")        │        │
-              ▼                                  │        │
-          ARRIVED                                │        │
-          (attaque en boucle)                    │        │
-                                                 │        │
-          MOVING ──► FindPath() = null ──► BLOCKED        │
-                                            │             │
-                              OnGridUpdated─┘             │
-                              RecalculatePath()           │
-                                                          │
+              │  OnTriggerEnter2D("Base")       │        │
+              ▼                                 │        │
+          ARRIVED                               │        │
+          (attaque en boucle)                   │        │
+                                                │        │
+          MOVING ──► FindPath() = null ──► BLOCKED       │
+                                            │            │
+                              OnGridUpdated─┘            │
+                              RecalculatePath()          │
+                                                         │
           Any ──► HP ≤ 0 ──► DEAD ──────────────────────►┘
 ```
 
@@ -285,7 +285,7 @@ Des points colorés sont superposés sur la minimap pour indiquer la position ex
 
 Le TP3 porte sur la rétroaction audiovisuelle (animations, particules, musique, effets sonores). Les éléments suivants ont été intégrés lors du développement du TP2 et constituent une base pour ce livrable.
 
-### 5.1 Animation des agents
+### 5.1 Animation des agents - Marion KAUFFMANN
 
 Les ennemis (`EnemyAI`) et les personnages joueurs (`PlayerController`) disposent chacun d'un composant `Animator` Unity. Les ennemis utilisent un paramètre entier `stateAnim` dont la valeur est mise à jour par `UpdateAnimator()` à chaque changement d'état de la machine à états :
 
@@ -297,7 +297,7 @@ Les ennemis (`EnemyAI`) et les personnages joueurs (`PlayerController`) disposen
 
 Les transitions d'animation sont ainsi directement coordonnées aux événements de la simulation. Cette architecture est compatible avec les critères du TP3 : « les agents ont plus d'une animation » et « l'animation des agents est coordonnée aux événements de la simulation ».
 
-### 5.2 Animation de l'interface graphique
+### 5.2 Animation de l'interface graphique - Léandre CACARIE
 
 **Barre de chargement :** `LoadingScreenController` anime en temps réel l'`anchorMax.x` d'un `RectTransform` pour représenter la progression. La valeur affichée est le minimum entre la progression asynchrone réelle et le temps écoulé, créant une animation contrainte et fluide.
 
