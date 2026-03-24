@@ -141,7 +141,6 @@ public class PauseMenuController : MonoBehaviour
 
         AddTitle(panel, "PAUSE");
         CreateButton(panel, "Resume", Resume);
-        CreateButton(panel, "Settings", OnSettings);
         CreateButton(panel, "Controls", OnControls);
         CreateButton(panel, "Restart", OnRestart);
         CreateButton(panel, "Back to Menu", OnBackToMenu);

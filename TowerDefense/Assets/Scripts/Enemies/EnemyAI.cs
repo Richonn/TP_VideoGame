@@ -39,6 +39,7 @@ public class EnemyAI : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         ConfigureByType();
+        ApplyDifficultyModifiers();
         _currentHP = maxHP;
     }
 
@@ -77,6 +78,13 @@ public class EnemyAI : MonoBehaviour
             return;
         }
         FollowPath();
+    }
+
+    private void ApplyDifficultyModifiers()
+    {
+        if (GameManager.Instance?.Difficulty != GameManager.DifficultyLevel.Hard) return;
+        maxHP = Mathf.RoundToInt(maxHP * 1.75f);
+        speed *= 1.25f;
     }
 
     private void ConfigureByType()

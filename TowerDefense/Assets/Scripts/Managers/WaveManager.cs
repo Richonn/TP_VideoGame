@@ -44,6 +44,9 @@ public class WaveManager : MonoBehaviour
         int wave = GameManager.Instance != null ? GameManager.Instance.CurrentWave : 1;
         int count = enemiesWave1 + (wave - 1) * enemiesPerWave;
 
+        if (GameManager.Instance?.Difficulty == GameManager.DifficultyLevel.Hard)
+            count = Mathf.RoundToInt(count * 1.5f);
+
         StartCoroutine(SpawnWave(count, wave));
     }
 
@@ -74,13 +77,25 @@ public class WaveManager : MonoBehaviour
     private GameObject PickPrefab(int wave)
     {
         float r = Random.value;
+        bool hard = GameManager.Instance?.Difficulty == GameManager.DifficultyLevel.Hard;
 
-        if (wave <= 2)
-            return prefabRush;
+        if (hard)
+        {
+            if (wave <= 1)
+                return r < 0.55f ? prefabRush : (prefabTank != null ? prefabTank : prefabRush);
+            if (wave <= 3)
+            {
+                if (r < 0.35f) return prefabRush;
+                if (r < 0.75f) return prefabTank != null ? prefabTank : prefabRush;
+                return prefabFlanker != null ? prefabFlanker : prefabRush;
+            }
+            if (r < 0.25f) return prefabRush;
+            if (r < 0.6f) return prefabTank != null ? prefabTank : prefabRush;
+            return prefabFlanker != null ? prefabFlanker : prefabRush;
+        }
 
-        if (wave <= 4)
-            return r < 0.7f ? prefabRush : (prefabTank != null ? prefabTank : prefabRush);
-
+        if (wave <= 2) return prefabRush;
+        if (wave <= 4) return r < 0.7f ? prefabRush : (prefabTank != null ? prefabTank : prefabRush);
         if (r < 0.5f) return prefabRush;
         if (r < 0.8f) return prefabTank != null ? prefabTank : prefabRush;
         return prefabFlanker != null ? prefabFlanker : prefabRush;

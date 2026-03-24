@@ -7,7 +7,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public enum GameState { Menu, Preparation, Defense, GameOver }
+    public enum DifficultyLevel { Easy, Hard }
+
     public GameState CurrentState { get; private set; } = GameState.Menu;
+    public DifficultyLevel Difficulty { get; private set; } = DifficultyLevel.Easy;
 
     public int CurrentWave { get; private set; }
     public float PrepTimeRemaining { get; private set; }
@@ -30,6 +33,12 @@ public class GameManager : MonoBehaviour
     }
 
     void Update() {}
+
+    public void StartGame(DifficultyLevel difficulty)
+    {
+        Difficulty = difficulty;
+        StartGame();
+    }
 
     public void StartGame()
     {
