@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private InputManager.PlayerInputData _input;
     private Animator _animator;
     private Tower _nearbyTower;
-    private bool _menuOpen = false;
+    private bool _upgradeMenuOpen = false;
 
     void Start()
     {
@@ -42,18 +42,18 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!_menuOpen) Move();
+        Move();
     }
 
     private void HandleTowerInteraction()
     {
         Tower nearest = FindNearbyTower();
 
-        if (_menuOpen)
+        if (_upgradeMenuOpen)
         {
             if (nearest == null || _input.InteractPressed)
             {
-                _menuOpen = false;
+                _upgradeMenuOpen = false;
                 interactUI?.HideAll();
             }
             return;
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
             if (_input.InteractPressed)
             {
-                _menuOpen = true;
+                _upgradeMenuOpen = true;
                 interactUI?.OpenMenu(nearest);
             }
         }

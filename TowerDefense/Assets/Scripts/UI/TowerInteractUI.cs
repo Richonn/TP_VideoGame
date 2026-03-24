@@ -13,6 +13,7 @@ public class TowerInteractUI : MonoBehaviour
     [Header("Screen Menu")]
     [SerializeField] private GameObject menuPanel;         // upgrade panel on this player's canvas
     [SerializeField] private TextMeshProUGUI rangeText;
+    [SerializeField] private TextMeshProUGUI damageText;
 
     private Tower _currentTower;
     private Transform _playerTransform;
@@ -40,7 +41,6 @@ public class TowerInteractUI : MonoBehaviour
         _currentTower = tower;
         promptObject.SetActive(true);
         menuPanel.SetActive(false);
-        Debug.Log($"[TowerUI] ShowPrompt called, promptObject active: {promptObject.activeSelf}");
     }
 
     public void OpenMenu(Tower tower)
@@ -71,7 +71,9 @@ public class TowerInteractUI : MonoBehaviour
 
     private void RefreshText()
     {
-        if (_currentTower != null)
+        if (_currentTower != null) {
             rangeText.text = $"Range: {_currentTower.range:F1}";
+            damageText.text = $"Damage: {_currentTower.damage:F1}";
+        }
     }
 }

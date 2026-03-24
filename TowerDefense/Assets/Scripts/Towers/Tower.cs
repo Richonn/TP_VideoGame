@@ -10,8 +10,10 @@ public class Tower : MonoBehaviour
 
     [Header("Interaction")]
     public float interactRadius = 1.5f;
-    [SerializeField] private int rangeUpgradeCost = 30;
+    [SerializeField] private int rangeUpgradeCost = 100;
     [SerializeField] private float rangeUpgradeAmount = 0.5f;
+    [SerializeField] private int damageUpgradeAmount = 1;
+
 
     [Header("Targeting")]
     [SerializeField] private LayerMask enemyLayer;
@@ -42,6 +44,7 @@ public class Tower : MonoBehaviour
 
         ResourceManager.Instance.Spend(playerIndex, rangeUpgradeCost);
         range += rangeUpgradeAmount;
+        damage += damageUpgradeAmount;
 
         // Refresh the range display
         GetComponent<TowerRangeDisplay>()?.RefreshDisplay();
