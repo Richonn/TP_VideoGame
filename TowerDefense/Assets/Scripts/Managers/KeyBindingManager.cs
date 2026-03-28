@@ -30,18 +30,20 @@ public class KeyBindingManager : MonoBehaviour
         Move_Right,
         PlaceTower,
         Interact,
-        LaunchWave
+        LaunchWave,
+        UIConfirm
     }
 
     private static readonly Dictionary<ActionType, KeyBinding> DefaultBindings = new Dictionary<ActionType, KeyBinding>()
     {
-        { ActionType.Move_Up, new KeyBinding { ActionName = "Move_Up", KeyboardKey = KeyCode.Z, GamepadButton = GamepadButtonType.South } },
-        { ActionType.Move_Down, new KeyBinding { ActionName = "Move_Down", KeyboardKey = KeyCode.S, GamepadButton = GamepadButtonType.South } },
-        { ActionType.Move_Left, new KeyBinding { ActionName = "Move_Left", KeyboardKey = KeyCode.Q, GamepadButton = GamepadButtonType.South } },
-        { ActionType.Move_Right, new KeyBinding { ActionName = "Move_Right", KeyboardKey = KeyCode.D, GamepadButton = GamepadButtonType.South } },
-        { ActionType.PlaceTower, new KeyBinding { ActionName = "PlaceTower", KeyboardKey = KeyCode.E, GamepadButton = GamepadButtonType.South } },
-        { ActionType.Interact, new KeyBinding { ActionName = "Interact", KeyboardKey = KeyCode.F, GamepadButton = GamepadButtonType.North } },
-        { ActionType.LaunchWave, new KeyBinding { ActionName = "LaunchWave", KeyboardKey = KeyCode.Tab, GamepadButton = GamepadButtonType.East } }
+        { ActionType.Move_Up,    new KeyBinding { ActionName = "Move_Up",    KeyboardKey = KeyCode.Z,   GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Down,  new KeyBinding { ActionName = "Move_Down",  KeyboardKey = KeyCode.S,   GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Left,  new KeyBinding { ActionName = "Move_Left",  KeyboardKey = KeyCode.Q,   GamepadButton = GamepadButtonType.South } },
+        { ActionType.Move_Right, new KeyBinding { ActionName = "Move_Right", KeyboardKey = KeyCode.D,   GamepadButton = GamepadButtonType.South } },
+        { ActionType.PlaceTower, new KeyBinding { ActionName = "PlaceTower", KeyboardKey = KeyCode.E,   GamepadButton = GamepadButtonType.East  } }, // A
+        { ActionType.LaunchWave, new KeyBinding { ActionName = "LaunchWave", KeyboardKey = KeyCode.Tab, GamepadButton = GamepadButtonType.South } }, // B
+        { ActionType.Interact,   new KeyBinding { ActionName = "Interact",   KeyboardKey = KeyCode.F,   GamepadButton = GamepadButtonType.North } }, // Y
+        { ActionType.UIConfirm, new KeyBinding { ActionName = "UIConfirm", KeyboardKey = KeyCode.Return, GamepadButton = GamepadButtonType.West } }, // X
     };
 
     void Awake()

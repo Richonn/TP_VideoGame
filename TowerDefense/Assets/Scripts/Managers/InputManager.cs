@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
         public bool PlaceTowerHeld;
         public bool InteractHeld;
         public bool LaunchWaveHeld;
+        public Vector2 UINavigate;
+        public bool UIConfirmPressed;
     }
 
     private PlayerInputData[] _inputData = new PlayerInputData[2];
@@ -97,6 +99,7 @@ public class InputManager : MonoBehaviour
         KeyBindingManager.KeyBinding placeTower = KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.PlaceTower);
         KeyBindingManager.KeyBinding interact = KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.Interact);
         KeyBindingManager.KeyBinding launchWave = KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.LaunchWave);
+        KeyBindingManager.KeyBinding uiConfirm = KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.UIConfirm);
 
         Vector2 direction = Vector2.zero;
         if (Input.GetKey(up.KeyboardKey)) direction.y += 1;
@@ -113,6 +116,7 @@ public class InputManager : MonoBehaviour
             PlaceTowerHeld = Input.GetKey(placeTower.KeyboardKey),
             InteractHeld = Input.GetKey(interact.KeyboardKey),
             LaunchWaveHeld = Input.GetKey(launchWave.KeyboardKey),
+            UIConfirmPressed = Input.GetKeyDown(uiConfirm.KeyboardKey),
         };
     }
 
@@ -132,7 +136,9 @@ public class InputManager : MonoBehaviour
         ButtonControl placeTowerBtn = GetGamepadButton(gamepad, KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.PlaceTower).GamepadButton);
         ButtonControl interactBtn = GetGamepadButton(gamepad, KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.Interact).GamepadButton);
         ButtonControl launchWaveBtn = GetGamepadButton(gamepad, KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.LaunchWave).GamepadButton);
+        ButtonControl uiConfirmBtn  = GetGamepadButton(gamepad, KeyBindingManager.Instance.GetBinding(KeyBindingManager.ActionType.UIConfirm).GamepadButton);
 
+        Vector2 dpad = gamepad.dpad.ReadValue();
         return new PlayerInputData
         {
             MoveDirection = stick,
@@ -141,6 +147,8 @@ public class InputManager : MonoBehaviour
             PlaceTowerHeld = placeTowerBtn.isPressed,
             InteractHeld = interactBtn.isPressed,
             LaunchWaveHeld = launchWaveBtn.isPressed,
+            UINavigate = dpad,
+            UIConfirmPressed = uiConfirmBtn.wasPressedThisFrame,
         };
     }
 
