@@ -74,7 +74,8 @@
 │  ProcessGamepadInput()   ◄── Gamepad.all[index]     │
 │                                                     │
 │  → PlayerInputData { MoveDirection, PlaceTower,     │
-│                       Interact, LaunchWave }        │
+│                       Interact, LaunchWave,         │
+│                       UINavigate, UIConfirm }       │
 └───────────────┬─────────────────────┬───────────────┘
                 │ GetInput(1)         │ GetInput(2)
                 ▼                     ▼
@@ -102,9 +103,11 @@ PauseMenu   ◄── Input.GetKeyDown(KeyCode.Escape)
 | Action | Joueur 1 (Clavier) | Joueur 2 (Manette) |
 |---|---|---|
 | Déplacement | Z / S / Q / D | Stick gauche |
-| Placer une tour | E | A (South) |
+| Placer une tour | E | B (East) |
 | Interagir / Améliorer | F | Y (North) |
-| Lancer la vague | Tab (maintenu) | B (East) (maintenu) |
+| Lancer la vague | Tab (maintenu) | A (South) (maintenu) |
+| Confirmer (menu tour) | Entrée | X (West) |
+| Navigation menu tour | Q / D | D-pad gauche / droite |
 | Pause | Échap | — |
 
 ### 2.3 Zones de jeu
@@ -113,7 +116,9 @@ La carte est divisée verticalement en deux moitiés. Chaque joueur ne peut plac
 
 ### 2.4 Interaction avec les tours
 
-Lorsqu'un joueur s'approche d'une tour (rayon d'interaction : 1,5 unités), une invite flottante en espace monde apparaît au-dessus de son personnage. En appuyant sur la touche Interagir, un menu d'amélioration s'ouvre et affiche la portée et les dégâts actuels. Le bouton d'amélioration coûte 100 unités d'or au joueur concerné et augmente la portée de 0,5 et les dégâts de 1.
+Lorsqu'un joueur s'approche d'une tour (rayon d'interaction : 1,5 unités), une invite flottante en espace monde apparaît au-dessus de son personnage. En appuyant sur la touche Interagir, un menu d'amélioration s'ouvre et affiche la portée et les dégâts actuels.
+
+Le menu est navigable au gamepad : le D-pad gauche/droite déplace la sélection entre les boutons (Améliorer / Fermer), le bouton sélectionné est mis en surbrillance jaune, et UIConfirm (X / Entrée) valide l'action. Au clavier, les touches Q/D permettent la navigation et Entrée confirme. Le bouton d'amélioration coûte 100 unités d'or au joueur concerné et augmente la portée de 0,5 et les dégâts de 1.
 
 ---
 
@@ -233,10 +238,10 @@ Cette fonctionnalité couvre la conception d'un gestionnaire de contrôles perso
 `KeyBindingManager` centralise toutes les liaisons clavier et manette dans un dictionnaire indexé par `ActionType` (enum). `InputManager` consulte `KeyBindingManager` à chaque frame pour résoudre les entrées, isolant complètement la logique de jeu de la configuration des touches.
 
 **Rebind clavier (Joueur 1) :**
-7 actions sont rebindables : Move_Up, Move_Down, Move_Left, Move_Right, PlaceTower, Interact, LaunchWave. Le rebind se fait en cliquant le bouton de l'action concernée puis en appuyant sur la nouvelle touche (timeout de 5 secondes). Les touches Échap et Entrée annulent le rebind.
+8 actions sont rebindables : Move_Up, Move_Down, Move_Left, Move_Right, PlaceTower, Interact, LaunchWave, UIConfirm. Le rebind se fait en cliquant le bouton de l'action concernée puis en appuyant sur la nouvelle touche (timeout de 5 secondes). Les touches Échap et Entrée annulent le rebind.
 
 **Rebind manette (Joueur 2) :**
-3 actions sont rebindables : PlaceTower, Interact, LaunchWave. Le rebind attend l'appui d'un bouton de la manette courante.
+4 actions sont rebindables : PlaceTower, Interact, LaunchWave, UIConfirm. Le rebind attend l'appui d'un bouton de la manette courante. L'action UIConfirm est utilisée pour valider les sélections dans les menus en jeu (menu d'amélioration de tour), en complément du D-pad pour la navigation.
 
 **Choix du contrôleur par joueur :**
 Dans le panneau Controls (accessible depuis la pause), chaque joueur peut basculer entre Keyboard et Gamepad. En mode Gamepad, un sélecteur ◀/▶ permet de choisir la manette physique par index parmi les périphériques connectés (`Gamepad.all`).
