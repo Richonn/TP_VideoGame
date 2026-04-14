@@ -84,9 +84,15 @@ public class Tower : MonoBehaviour
         AudioManager.Instance?.PlaySFX(SFXType.TowerShoot, transform.position);
         VFXManager.Instance?.Play(VFXType.TowerMuzzle, transform.position);
 
+        Vector3 enemyPos = target.transform.position;
         target.TakeDamage(damage);
-        AudioManager.Instance?.PlaySFX(SFXType.TowerImpact, target.transform.position);
-        VFXManager.Instance?.Play(VFXType.TowerImpact, target.transform.position);
+
+        GameObject proj = VFXManager.Instance?.LaunchProjectile(transform.position, enemyPos);
+        if (proj == null)
+        {
+            AudioManager.Instance?.PlaySFX(SFXType.TowerImpact, enemyPos);
+            VFXManager.Instance?.Play(VFXType.TowerImpact, enemyPos);
+        }
     }
 
     void OnDrawGizmosSelected()

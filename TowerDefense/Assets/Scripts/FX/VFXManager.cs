@@ -27,7 +27,12 @@ public class VFXManager : MonoBehaviour
 
     [SerializeField] private VFXEntry[] entries;
 
+    [Header("Projectile")]
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private int projectilePrewarm = 8;
+
     private readonly Dictionary<VFXType, VFXPool> _pools = new Dictionary<VFXType, VFXPool>();
+    private VFXPool _projectilePool;
     private Transform _poolRoot;
 
     void Awake()
@@ -52,6 +57,26 @@ public class VFXManager : MonoBehaviour
                 _pools[e.type] = new VFXPool(e.prefab, _poolRoot, e.prewarm);
             }
         }
+
+        if (projectilePrefab != null)
+            _projectilePool = new VFXPool(projectilePrefab, _poolRoot, projectilePrewarm);
+    }
+
+    public GameObject LaunchProjectile(Vector3 from, Vector3 to)
+    {
+        if (_projectilePool == null) return null;
+        GameObject go = _projectilePool.Get(from, Quaternion.identity);
+        Projectile proj = go.GetComponent<Projectile>();
+        if (proj != null) proj.Launch(from, to);
+        return go;
+    }
+
+    public void ReleaseProjectile(GameObject go)
+    {
+        if (_projectilePool != null)
+            _projectilePool.Release(go);
+        else if (go != null)
+            go.SetActive(false);
     }
 
     public void Play(VFXType type, Vector3 position, Quaternion rotation = default)
