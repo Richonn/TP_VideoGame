@@ -27,9 +27,17 @@ public class TowerInteractUI : MonoBehaviour
     private float _navCooldown = 0f;
     private const float NAV_DELAY = 0.2f;
 
+    private Vector3 _promptBaseScale = Vector3.one;
+    private Vector3 _menuBaseScale = Vector3.one;
+
     public int PlayerIndex { get => playerIndex; set => playerIndex = value; }
 
-    void Awake() => HideAll();
+    void Awake()
+    {
+        if (promptObject != null) _promptBaseScale = promptObject.transform.localScale;
+        if (menuPanel != null) _menuBaseScale = menuPanel.transform.localScale;
+        HideAll();
+    }
 
     public void Init(Transform playerTransform)
     {
@@ -106,7 +114,11 @@ public class TowerInteractUI : MonoBehaviour
             if (!wasActive)
             {
                 promptObject.transform.localScale = Vector3.zero;
-                UITween.ScaleTo(promptObject.transform, Vector3.one, 0.25f, Easing.Ease.EaseOutBack);
+                UITween.ScaleTo(promptObject.transform, _promptBaseScale, 0.25f, Easing.Ease.EaseOutBack);
+            }
+            else
+            {
+                promptObject.transform.localScale = _promptBaseScale;
             }
         }
         if (menuPanel != null) menuPanel.SetActive(false);
@@ -119,8 +131,8 @@ public class TowerInteractUI : MonoBehaviour
         if (menuPanel != null)
         {
             menuPanel.SetActive(true);
-            menuPanel.transform.localScale = Vector3.one * 0.7f;
-            UITween.ScaleTo(menuPanel.transform, Vector3.one, 0.3f, Easing.Ease.EaseOutBack);
+            menuPanel.transform.localScale = _menuBaseScale * 0.7f;
+            UITween.ScaleTo(menuPanel.transform, _menuBaseScale, 0.3f, Easing.Ease.EaseOutBack);
         }
         _selectedIndex = 0;
         UpdateButtonVisuals();
