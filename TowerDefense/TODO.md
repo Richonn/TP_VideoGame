@@ -112,33 +112,33 @@
   > ✅ Section "GAMEPAD — PLAYER 2" dans Controls, même flow que clavier (attente appui bouton, timeout 5s)
 
 ### 📄 Document TP2
-- [ ] Diagramme du flot d'application
-- [ ] Schéma de contrôle des agents (clavier + manette)
-- [ ] Description de l'IA de l'agent autonome (A\*)
-- [ ] Description des fonctionnalités supplémentaires individuelles
+- [x] Diagramme du flot d'application
+- [x] Schéma de contrôle des agents (clavier + manette)
+- [x] Description de l'IA de l'agent autonome (A\*)
+- [x] Description des fonctionnalités supplémentaires individuelles
 
 ---
 
 ## TP3 — Rétroaction audiovisuelle (30 avril 2026)
 
 ### 🎬 Animation `/15`
-- [ ] Animation des ennemis (marche, mort)
+- [x] Animation des ennemis (marche, mort)
 - [ ] Animation des tours (rotation vers cible, tir)
-- [ ] Animation des joueurs (idle, marche)
-- [ ] Animation coordonnée aux événements (mort, placement de tour…)
+- [x] Animation des joueurs (idle, marche)
+- [x] Animation coordonnée aux événements (mort, placement de tour…)
 - [ ] Flot d'animation sans bugs majeurs
 
 ### 🎞️ Animation de l'interface `/20`
 - [ ] Animation de l'interface (transitions HUD, pop-ups)
-- [ ] Animation par code écrit par l'équipe (pas juste Animator)
-- [ ] Easing sur les animations
-- [ ] Plusieurs types d'animations
+- [x] Animation par code écrit par l'équipe (pas juste Animator)
+- [x] Easing sur les animations
+- [x] Plusieurs types d'animations
 
 ### ✨ Effets de particules `/15`
 - [ ] Explosion à la mort d'un ennemi
 - [ ] Effet de tir des tours
 - [ ] Effet de destruction d'une tour
-- [ ] Effet visuel sur la base quand elle prend des dégâts
+- [x] Effet visuel sur la base quand elle prend des dégâts
 - [ ] Pooling des particules (système codé par l'équipe)
 
 ### 🔊 Ambiance sonore `/15`

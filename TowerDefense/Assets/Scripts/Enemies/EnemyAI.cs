@@ -34,6 +34,7 @@ public class EnemyAI : MonoBehaviour
     private Animator _animator;
     private HitFlash _hitFlash;
     private bool _dying;
+    private Vector3 _baseScale;
 
     public int WaypointIndex => _waypointIndex;
 
@@ -54,6 +55,7 @@ public class EnemyAI : MonoBehaviour
         ConfigureByType();
         ApplyDifficultyModifiers();
         _currentHP = maxHP;
+        _baseScale = transform.localScale;
     }
 
     void Start()
@@ -183,6 +185,7 @@ public class EnemyAI : MonoBehaviour
         state = EnemyState.MOVING;
         Vector2 destination = _path[_waypointIndex];
         transform.position = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+        UpdateAnimation();
 
         if (Vector2.Distance(transform.position, destination) < waypointTolerance)
             _waypointIndex++;
@@ -228,5 +231,19 @@ public class EnemyAI : MonoBehaviour
 
         OnEnemyDied?.Invoke();
         Destroy(gameObject, 0.1f);
+    }
+
+    private void UpdateAnimation()
+    {
+        if (_animator == null || _path == null || _waypointIndex >= _path.Count) return;
+        
+        Vector2 direction = (_path[_waypointIndex] - (Vector2)transform.position).normalized;
+        
+        // Flip sprite based on movement direction
+        if (Mathf.Abs(direction.x) > 0.05f)
+        {
+            float sign = Mathf.Sign(direction.x);
+            transform.localScale = new Vector3(_baseScale.x * sign, _baseScale.y, _baseScale.z);
+        }
     }
 }
