@@ -6,7 +6,6 @@ public enum SFXType
     TowerImpact,
     TowerPlace,
     TowerUpgrade,
-    EnemyHit,
     EnemyDeath,
     EnemyFootstep,
     EnemyAttack,

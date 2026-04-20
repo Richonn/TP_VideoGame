@@ -7,7 +7,6 @@ public enum VFXType
     TowerImpact,
     TowerPlace,
     TowerUpgrade,
-    EnemyHit,
     EnemyDeath,
     BaseHit,
     ResourceGain

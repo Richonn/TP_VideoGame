@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HitFlash : MonoBehaviour
 {
-    [SerializeField] private Color flashColor = Color.white;
+    [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float duration = 0.1f;
 
     private SpriteRenderer[] _renderers;

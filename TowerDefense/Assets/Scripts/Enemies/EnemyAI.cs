@@ -208,8 +208,6 @@ public class EnemyAI : MonoBehaviour
 
         _currentHP -= damage;
         _hitFlash?.Flash();
-        AudioManager.Instance?.PlaySFX(SFXType.EnemyHit, transform.position);
-        VFXManager.Instance?.Play(VFXType.EnemyHit, transform.position);
 
         if (_currentHP <= 0)
             Die();

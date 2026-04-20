@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2351902351135676908}
   - component: {fileID: -6211976008554405891}
   - component: {fileID: 4417948802292801815}
+  - component: {fileID: 4764509618856857636}
   m_Layer: 6
   m_Name: EnemyTank
   m_TagString: Untagged
@@ -101,7 +102,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.41145834, y: 0.46354166}
+    oldSize: {x: 1.234375, y: 1.390625}
     newSize: {x: 3, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -126,6 +127,7 @@ MonoBehaviour:
   maxHP: 3
   baseDamage: 1
   waypointTolerance: 0.15
+  attackCooldown: 1
 --- !u!212 &-6211976008554405891
 SpriteRenderer:
   serializedVersion: 2
@@ -207,3 +209,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4764509618856857636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7997252028516866003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8734306c719feaccba7f1c98b8e53b17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  duration: 0.1
