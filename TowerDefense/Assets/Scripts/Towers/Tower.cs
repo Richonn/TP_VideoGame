@@ -13,6 +13,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private int rangeUpgradeCost = 100;
     [SerializeField] private float rangeUpgradeAmount = 0.5f;
     [SerializeField] private int damageUpgradeAmount = 1;
+    [SerializeField] private ParticleSystem upgradeParticles;
 
 
     [Header("Targeting")]
@@ -55,6 +56,7 @@ public class Tower : MonoBehaviour
         GetComponent<TowerRangeDisplay>()?.RefreshDisplay();
 
         AudioManager.Instance?.PlaySFX(SFXType.TowerUpgrade, transform.position);
+        upgradeParticles.Play();
 
         return true;
     }
