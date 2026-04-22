@@ -145,19 +145,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: 69cb1e57735db1fc0800000000000000
+      spriteID: 02aab2dc2db2ba702a214175804d9a40
       internalID: -3522987849309635434
       vertices: []
       indices: 
@@ -175,19 +167,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: dbd5f0a77379ee810800000000000000
+      spriteID: 714034496f858eacb80cc9d346a5fd77
       internalID: 1796539565894229437
       vertices: []
       indices: 
@@ -205,19 +189,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: 73dd4eb8551937aa0800000000000000
+      spriteID: 43b803bfc4357937dab52d8a9e833552
       internalID: -6164423668334797513
       vertices: []
       indices: 
@@ -235,19 +211,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: a6418a013c0e3ea70800000000000000
+      spriteID: c5e754a5b6b4183958766b9aa669e951
       internalID: 8855168420743222378
       vertices: []
       indices: 
@@ -265,19 +233,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: 75fea327591a8f270800000000000000
+      spriteID: b1db85468e87b1df180a987ec9755460
       internalID: 8284549177786691415
       vertices: []
       indices: 
@@ -289,25 +249,17 @@ TextureImporter:
         serializedVersion: 2
         x: 1013
         y: 56
-        width: 59
+        width: 87
         height: 84
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: e321b13454b1caad0800000000000000
+      spriteID: a228457a0127ea18c854b8b261e0e570
       internalID: -2689744893154487746
       vertices: []
       indices: 
@@ -317,27 +269,19 @@ TextureImporter:
       name: Archer_Shoot_6
       rect:
         serializedVersion: 2
-        x: 1064
-        y: 97
-        width: 36
-        height: 37
+        x: 1206
+        y: 56
+        width: 78
+        height: 82
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
       bones: []
-      spriteID: b01822b5e5192f600800000000000000
+      spriteID: 5099814046554d6f79fc4078f9f4dd07
       internalID: 500622343033487627
       vertices: []
       indices: 
@@ -345,66 +289,6 @@ TextureImporter:
       weights: []
     - serializedVersion: 2
       name: Archer_Shoot_7
-      rect:
-        serializedVersion: 2
-        x: 1206
-        y: 56
-        width: 59
-        height: 82
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1b8fc6eed00c17560800000000000000
-      internalID: 7309834836266252465
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Archer_Shoot_8
-      rect:
-        serializedVersion: 2
-        x: 1256
-        y: 80
-        width: 28
-        height: 42
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      tessellationDetail: 0
-      bones: []
-      spriteID: cc64d2036bcfd8978a1be363a6d45646
-      internalID: 2016082600
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Archer_Shoot_9
       rect:
         serializedVersion: 2
         x: 1399
@@ -415,20 +299,12 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
-      outline:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
-      physicsShape:
-      - - {x: 0, y: -16}
-        - {x: 16, y: 0}
-        - {x: 0, y: 16}
-        - {x: -16, y: 0}
+      outline: []
+      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c0c742e323f5a5820ac1e2be2f21e65a
-      internalID: -1052731892
+      spriteID: 0302dc0b83c36e4e48d2d354b83360fd
+      internalID: 7309834836266252465
       vertices: []
       indices: 
       edges: []
@@ -447,7 +323,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":2,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      - key: SpriteEditor.SliceOnImport
+        value: False
     nameFileIdTable:
       Archer_Shoot_0: -3522987849309635434
       Archer_Shoot_1: 1796539565894229437

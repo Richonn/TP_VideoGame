@@ -33,7 +33,6 @@ public class EnemyAI : MonoBehaviour
     private EnemyState _state = EnemyState.WAITING;
     private Animator _animator;
     private HitFlash _hitFlash;
-    private bool _dying;
     private Vector3 _baseScale;
 
     public int WaypointIndex => _waypointIndex;
@@ -77,7 +76,7 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (_dying) return;
+        if (state == EnemyState.DEAD) return;
         if (state == EnemyState.ARRIVED)
         {
             _attackTimer -= Time.deltaTime;
@@ -141,13 +140,13 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        int stateAnim = _state switch // idle = 0, run = 1, attack = 2
+        int stateAnim = _state switch // idle = 0, run = 1, attack = 2, dead = 3
         {
             EnemyState.WAITING  => 0,
             EnemyState.MOVING   => 1,
             EnemyState.ARRIVED  => 2,
             EnemyState.BLOCKED  => 0,
-            EnemyState.DEAD     => 0,
+            EnemyState.DEAD     => 3,
             _                   => 0
         };
 
@@ -204,7 +203,7 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (_dying) return;
+        if (state == EnemyState.DEAD) return;
 
         _currentHP -= damage;
         _hitFlash?.Flash();
@@ -215,7 +214,6 @@ public class EnemyAI : MonoBehaviour
 
     private void Die()
     {
-        _dying = true;
         state = EnemyState.DEAD;
 
         if (ResourceManager.Instance != null)
