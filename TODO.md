@@ -82,9 +82,7 @@ Suivi des travaux TP2 (rendu) et TP3 (rétroaction audiovisuelle, deadline **30 
 - [x] 1 ambient importé : `ambient_wind` (à utiliser dans Game scene)
 - [x] `CREDITS.md` rédigé avec sources CC-BY 3.0 / CC0
 - [x] Compresser les .wav en Vorbis dans l'Inspector Unity (Streaming, Quality 60-65, ~260 MB → ~25 MB)
-- [ ] **Jouer `ambient_wind` en boucle pendant le Game** — actuellement le fichier existe mais n'est référencé nulle part dans le code. Solutions :
-  - Créer un GameObject `AmbientPlayer` dans `Game.unity` avec une `AudioSource` qui joue `ambient_wind.wav` en loop, sortant sur le groupe `Ambient` du mixer
-  - Ou ajouter un champ `ambientLoop` dans `AudioManager` joué automatiquement à l'entrée du Game
+- [x] Jouer `ambient_wind` en boucle pendant le Game — `AudioManager` étendu avec un slot `ambientClip` + sub-AudioSource routée sur le groupe `Ambient`. Auto-play crossfade quand la scène active s'appelle `Game`, fade-out quand on en sort. Câblé dans `MainMenu.unity` (AudioManager component).
 - [ ] (Bonus) Importer un `ambient_torch` 3D spatialisé sur les torches pour le critère « spatialisation »
 
 ### Pilier 5 — Effets sonores /15
@@ -99,11 +97,9 @@ Suivi des travaux TP2 (rendu) et TP3 (rétroaction audiovisuelle, deadline **30 
 
 ### Pilier 6 — Volumes séparés (sliders Settings)
 
-- [ ] **Refacto `SettingsPanelController.cs`** — actuellement il n'utilise qu'un seul `volumeSlider` lié à `AudioListener.volume`, pas le mixer. Il faut :
-  - Remplacer par 4 `[SerializeField] Slider` (Master / Music / SFX / Ambient)
-  - Appeler `AudioManager.Instance.SetMasterVolume(v)` etc. dans les listeners
-- [ ] Mettre à jour le panel Settings dans MainMenu (et Pause si présent) pour avoir les 4 sliders côte à côte
-- [ ] Tester que les sliders modifient bien chaque groupe indépendamment
+- [x] `SettingsPanelController.cs` refait : 4 sliders (Master/Music/SFX/Ambient) + back button. Hookup direct aux 4 méthodes `AudioManager.SetXxxVolume()`. Persistance via `PlayerPrefs` (`vol_master/music/sfx/ambient`). Mode "panneau enfant" via `Populate(panel, onBack)` — ne crée plus son propre overlay.
+- [x] `AudioManager.Start()` charge les `PlayerPrefs` et applique les volumes sauvegardés (les valeurs persistent entre les runs).
+- [x] Bouton "Settings" ajouté **sous Controls** dans le menu Pause in-game (`PauseMenuController.BuildMainPanel`), même pattern que Controls : panel enfant du canvas Pause, navigation Back qui revient au panneau principal.
 
 ---
 
