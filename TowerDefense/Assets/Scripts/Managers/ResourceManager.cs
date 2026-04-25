@@ -37,6 +37,7 @@ public class ResourceManager : MonoBehaviour
         int idx = Mathf.Clamp(playerIndex - 1, 0, 1);
         _resources[idx] += amount;
         OnResourcesChanged?.Invoke(playerIndex, _resources[idx]);
+        if (amount > 0) AudioManager.Instance?.PlaySFX(SFXType.ResourceGain);
     }
 
     public bool Spend(int playerIndex, int cost)

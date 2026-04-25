@@ -16,7 +16,8 @@ public enum SFXType
     UIClick,
     UIBack,
     UIOpen,
-    UIWaveStart
+    UIWaveStart,
+    EnemyHit
 }
 
 [CreateAssetMenu(fileName = "SFXLibrary", menuName = "TowerDefense/Audio/SFX Library")]
