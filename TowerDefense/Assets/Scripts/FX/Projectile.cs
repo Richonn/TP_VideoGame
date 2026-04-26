@@ -12,6 +12,8 @@ public class Projectile : MonoBehaviour
     private bool _active;
     private Vector3 _baseScale;
     private bool _baseScaleCached;
+    
+    private System.Action _onArriveCallback;
 
     void Awake()
     {
@@ -22,7 +24,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void Launch(Vector3 from, Vector3 to)
+    public void Launch(Vector3 from, Vector3 to, System.Action onArrive = null)
     {
         _start = from;
         _end = to;
@@ -38,6 +40,7 @@ public class Projectile : MonoBehaviour
         }
         transform.localScale = _baseScale;
 
+        _onArriveCallback = onArrive;
         _active = true;
     }
 
@@ -56,5 +59,7 @@ public class Projectile : MonoBehaviour
     {
         _active = false;
         AudioManager.Instance?.PlaySFX(impactSFX, _end);
+        _onArriveCallback?.Invoke();
+        Destroy(gameObject);
     }
 }

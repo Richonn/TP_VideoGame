@@ -14,6 +14,9 @@ public class Tower : MonoBehaviour
     [SerializeField] private float rangeUpgradeAmount = 0.5f;
     [SerializeField] private int damageUpgradeAmount = 1;
     [SerializeField] private ParticleSystem upgradeParticles;
+    
+    [Header("Projectile")]
+    [SerializeField] private Projectile projectilePrefab;
 
 
     [Header("Targeting")]
@@ -85,7 +88,17 @@ public class Tower : MonoBehaviour
         AudioManager.Instance?.PlaySFX(SFXType.TowerShoot, transform.position);
 
         Vector3 enemyPos = target.transform.position;
-        target.TakeDamage(damage);
+        
+        if (projectilePrefab != null)
+        {
+            Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            projectile.Launch(transform.position, enemyPos, () => target.TakeDamage(damage));
+        }
+        else
+        {
+            // Fallback: damage immediately if no projectile is assigned
+            target.TakeDamage(damage);
+        }
     }
 
     void OnDrawGizmosSelected()
