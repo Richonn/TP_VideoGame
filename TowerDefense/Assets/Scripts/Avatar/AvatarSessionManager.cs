@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 /// <summary>
@@ -13,6 +14,44 @@ public class AvatarSessionManager : MonoBehaviour
 
     private AvatarType _player1Avatar = AvatarType.Blue;
     private AvatarType _player2Avatar = AvatarType.Purple;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject); // Survive scene transitions
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    /// <summary>
+    /// Re-applies both players' avatars after a new scene finishes loading,
+    /// because PlayerController objects are freshly instantiated each time.
+    /// </summary>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Small delay via coroutine so all Start() methods have run first
+        StartCoroutine(ApplyAvatarsNextFrame());
+    }
+
+    private System.Collections.IEnumerator ApplyAvatarsNextFrame()
+    {
+        yield return null; // wait one frame for PlayerControllers to Start()
+        UpdatePlayerAvatar(1);
+        UpdatePlayerAvatar(2);
+    }
 
     public AvatarType GetPlayerAvatar(int playerNumber)
     {
@@ -61,23 +100,23 @@ public class AvatarSessionManager : MonoBehaviour
     private void UpdatePlayerAvatar(int playerNumber)
     {
         PlayerController player = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
-            .FirstOrDefault((p) => p.playerNumber == playerNumber);
+            .FirstOrDefault(p => p.playerNumber == playerNumber);
 
         if (player == null) return;
 
         AvatarType avatarType = playerNumber == 1 ? _player1Avatar : _player2Avatar;
 
-        Sprite avatarIconTest = GetAvatarIcon(avatarType);
-        Debug.Log($"[Avatar] Loading sprite: AvatarIcons/{avatarType} → {(avatarIconTest == null ? "NULL" : "OK")}");
-        // Update animator
-        Animator animator = player.GetComponent<Animator>();
-        if (animator != null)
+        // Update animator controller on the player via the exposed method,
+        // which also refreshes PlayerController's internal cached reference.
+        RuntimeAnimatorController controller = GetAnimatorController(avatarType);
+        if (controller != null)
         {
-            RuntimeAnimatorController controller = GetAnimatorController(avatarType);
-            if (controller != null)
-            {
-                animator.runtimeAnimatorController = controller;
-            }
+            player.ApplyAnimatorController(controller);
+            Debug.Log($"[Avatar] P{playerNumber} animator set to: AvatarControllers/{avatarType}");
+        }
+        else
+        {
+            Debug.LogWarning($"[Avatar] No controller found at: AvatarControllers/{avatarType}");
         }
 
         // Update avatar icon in HUD
@@ -87,23 +126,5 @@ public class AvatarSessionManager : MonoBehaviour
             Sprite avatarIcon = GetAvatarIcon(avatarType);
             hudManager.UpdatePlayerAvatarIcon(playerNumber, avatarIcon);
         }
-
-        // Update sprite renderer if it exists
-        // SpriteRenderer spriteRenderer = player.GetComponentInChildren<SpriteRenderer>();
-        // if (spriteRenderer != null)
-        // {
-        //     // The sprite will be updated by the animator, but you can set idle sprite here if needed
-        // }
-    }
-
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject); // ADD THIS
     }
 }

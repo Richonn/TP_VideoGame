@@ -38,6 +38,23 @@ public class PlayerController : MonoBehaviour
             footstep.Type = SFXType.PlayerFootstep;
             footstep.AutoEmit = true;
         }
+
+        // Apply the saved avatar choice as soon as this player is ready
+        AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber,
+            AvatarSessionManager.Instance.GetPlayerAvatar(playerNumber));
+    }
+
+    /// <summary>
+    /// Swaps the animator controller at runtime and refreshes the cached reference.
+    /// Called by AvatarSessionManager when the player changes their avatar.
+    /// </summary>
+    public void ApplyAnimatorController(RuntimeAnimatorController controller)
+    {
+        if (_animator == null)
+            _animator = GetComponent<Animator>();
+
+        if (_animator != null && controller != null)
+            _animator.runtimeAnimatorController = controller;
     }
 
     void Update()
@@ -119,14 +136,15 @@ public class PlayerController : MonoBehaviour
         Vector2 newPos = _rb.position + _input.MoveDirection * moveSpeed * Time.fixedDeltaTime;
         newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
         newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
-        
+
         // Check if the new position is on a walkable grid cell
-        if (GridManager.Instance != null) {
+        if (GridManager.Instance != null)
+        {
             Node targetNode = GridManager.Instance.WorldToNode(newPos);
-            if (targetNode == null || !targetNode.walkable) {
-                return; // Don't move if the cell is not walkable
-            }
+            if (targetNode == null || !targetNode.walkable)
+                return;
         }
+
         // Separately block the player from walking onto the base
         if (IsBaseAtPosition(newPos))
             return;
