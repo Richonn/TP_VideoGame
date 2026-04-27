@@ -1,5 +1,13 @@
 fileFormatVersion: 2
 guid: c878335cd40734eedbf12e637fabf091
+AssetOrigin:
+  serializedVersion: 1
+  productId: 352566
+  packageName: Tiny Swords
+  packageVersion: 1.0
+  assetPath: Assets/Tiny Swords/Pawn and Resources/Pawn/Black Pawn/Pawn_Interact
+    Axe.png
+  uploadId: 844324
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -121,10 +129,10 @@ TextureImporter:
       name: Pawn_Interact Axe_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 192
-        height: 192
+        x: 56
+        y: 57
+        width: 62
+        height: 74
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -143,10 +151,10 @@ TextureImporter:
       name: Pawn_Interact Axe_1
       rect:
         serializedVersion: 2
-        x: 192
-        y: 0
-        width: 192
-        height: 192
+        x: 248
+        y: 57
+        width: 60
+        height: 75
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,10 +173,10 @@ TextureImporter:
       name: Pawn_Interact Axe_2
       rect:
         serializedVersion: 2
-        x: 384
-        y: 0
-        width: 192
-        height: 192
+        x: 443
+        y: 79
+        width: 9
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,10 +195,10 @@ TextureImporter:
       name: Pawn_Interact Axe_3
       rect:
         serializedVersion: 2
-        x: 576
-        y: 0
-        width: 192
-        height: 192
+        x: 452
+        y: 57
+        width: 86
+        height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,10 +217,10 @@ TextureImporter:
       name: Pawn_Interact Axe_4
       rect:
         serializedVersion: 2
-        x: 768
-        y: 0
-        width: 192
-        height: 192
+        x: 655
+        y: 57
+        width: 75
+        height: 67
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -231,10 +239,10 @@ TextureImporter:
       name: Pawn_Interact Axe_5
       rect:
         serializedVersion: 2
-        x: 960
-        y: 0
-        width: 192
-        height: 192
+        x: 844
+        y: 57
+        width: 61
+        height: 71
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -245,6 +253,28 @@ TextureImporter:
       bones: []
       spriteID: 81621f790b928f630800000000000000
       internalID: 3960961710712497688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pawn_Interact Axe_6
+      rect:
+        serializedVersion: 2
+        x: 1026
+        y: 57
+        width: 56
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b89b2df3ca7621bba81d6570962d5490
+      internalID: 438215552
       vertices: []
       indices: 
       edges: []
@@ -263,7 +293,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":192.0,"y":192.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Pawn_Interact Axe_0: 4690516624981630074
       Pawn_Interact Axe_1: 4820607410664315775
@@ -271,16 +301,9 @@ TextureImporter:
       Pawn_Interact Axe_3: 5281750946635039065
       Pawn_Interact Axe_4: 6324080537177615244
       Pawn_Interact Axe_5: 3960961710712497688
+      Pawn_Interact Axe_6: 438215552
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 352566
-  packageName: Tiny Swords
-  packageVersion: 1.0
-  assetPath: Assets/Tiny Swords/Pawn and Resources/Pawn/Black Pawn/Pawn_Interact
-    Axe.png
-  uploadId: 844324
