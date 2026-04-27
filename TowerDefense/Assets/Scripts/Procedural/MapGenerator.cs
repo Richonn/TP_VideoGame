@@ -30,6 +30,7 @@ public class MapGenerator : MonoBehaviour
 
     private readonly List<GameObject> _spawned = new List<GameObject>();
     private readonly Dictionary<Vector2Int, int> _obstacleMap = new Dictionary<Vector2Int, int>();
+    private readonly List<Collider2D> _colliders = new List<Collider2D>();
 
     void Awake()
     {
@@ -121,8 +122,10 @@ public class MapGenerator : MonoBehaviour
             Transform parent = spawnRoot != null ? spawnRoot : transform;
             GameObject go    = Instantiate(prefab, worldPos, Quaternion.identity, parent);
 
-            EnsureObstacleSortingLayer(go);
+            EnsureObstacleSortingLayer(go, layerIdx);
             layer.variantSet.ApplyRandomisation(go.transform, rng);
+            foreach (Collider2D col in go.GetComponentsInChildren<Collider2D>(true))
+                _colliders.Add(col);
 
             _spawned.Add(go);
 
@@ -144,6 +147,8 @@ public class MapGenerator : MonoBehaviour
     {
         MapBlueprint.ObstacleLayer[] layers  = { blueprint.trees, blueprint.bushes, blueprint.rocks };
         float[]                      offsets = { offT, offB, offR };
+
+        if (occupied[x, y]) return -1;
 
         for (int i = 0; i < layers.Length; i++)
         {
@@ -292,9 +297,11 @@ public class MapGenerator : MonoBehaviour
     private bool InBounds(int x, int y) =>
         x >= 0 && x < GridManager.Instance.Width && y >= 0 && y < GridManager.Instance.Height;
 
-    private static void EnsureObstacleSortingLayer(GameObject go)
+    private static void EnsureObstacleSortingLayer(GameObject go, int layerIdx)
     {
-        int order = Mathf.RoundToInt(-go.transform.position.y * 100f);
+        int order = Mathf.RoundToInt(-go.transform.position.y * 100f)
+                  + Mathf.RoundToInt(go.transform.position.x)
+                  - layerIdx;
         foreach (SpriteRenderer sr in go.GetComponentsInChildren<SpriteRenderer>(true))
         {
             sr.sortingLayerName = "Obstacles";
@@ -326,7 +333,11 @@ public class MapGenerator : MonoBehaviour
     private IEnumerator RefreshGridNextFrame()
     {
         yield return null;
-        GridManager.Instance?.UpdateGrid();
+        GridManager gm = GridManager.Instance;
+        if (gm == null) yield break;
+        gm.ClearObstacleColliders();
+        gm.RegisterObstacleColliders(_colliders);
+        gm.UpdateGrid();
     }
 
     private void ClearSpawned()
@@ -335,5 +346,6 @@ public class MapGenerator : MonoBehaviour
             if (go != null) Destroy(go);
         _spawned.Clear();
         _obstacleMap.Clear();
+        _colliders.Clear();
     }
 }

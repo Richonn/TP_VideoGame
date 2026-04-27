@@ -204,15 +204,16 @@
 ### ⭐ Fonctionnalités individuelles TP3 `/20 chacun`
 
 #### Léandre — Génération procédurale de l'environnement
-- [x] `MapBlueprint.cs` ScriptableObject (largeur, hauteur, densités, seed)
-- [x] `BlockVariantSet.cs` ScriptableObject (liste de variantes par type)
-- [x] `MapGenerator.cs` — pose des blocs selon blueprint + seed déterministe + animation spawn `EaseOutBack`
-- [ ] **Créer 3 ScriptableObjects `BlockVariantSet`** : `TreeVariants`, `BushVariants`, `RockVariants` (drag les prefabs Tiny Swords)
-- [ ] **Créer un `MapBlueprint` `DefaultMap.asset`** avec les 3 sets liés
-- [ ] **Installer le GameObject `MapGenerator` dans `Game.unity`** et lui assigner `DefaultMap`
-- [ ] **Configurer `Project Settings → Script Execution Order → MapGenerator → -100`** (avant GridManager)
-- [ ] Vérifier que les obstacles sont bien sur le sorting layer `Obstacles`
-- [ ] Tester avec différents seeds → toujours jouable + variation visuelle
+- [x] `MapBlueprint.cs` ScriptableObject — Perlin noise par layer, clustering, spacing, corridor sécurisé, zone tours
+- [x] `BlockVariantSet.cs` ScriptableObject — variantes pondérées, scale variation, flip X aléatoire
+- [x] `MapGenerator.cs` — Perlin noise + clustering + BFS flood-fill connectivité + animation spawn `EaseOutBack` (silent on awake)
+- [x] **Créer `TreeVariants.asset`** et **`RockVariants.asset`** + prefabs dans `Prefabs/Environment/`
+- [x] **Créer `BushVariants.asset`** — prefabs Bush 1-4 depuis `Terrain/Decorations/Bushes/`
+- [x] **Créer `DefaultMap.asset`** avec les sets liés
+- [x] **Installer le GameObject `MapGenerator` dans `Game.unity`** avec `DefaultMap`, spawn points et base assignés
+- [x] **Script Execution Order** : `GridManager → -200`, `MapGenerator → -100`
+- [x] Sorting layer `Obstacles` forcé automatiquement sur tous les sprites spawned
+- [x] Tester avec différents seeds → variation visuelle ✓, connectivité garantie par BFS ✓
 
 #### Marion — Personnalisation de l'avatar
 - [x] `AvatarProfile.cs` — sérialisation PlayerPrefs (classe, couleur primaire, tint secondaire, scale, flip)

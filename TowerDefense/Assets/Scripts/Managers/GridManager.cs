@@ -26,82 +26,56 @@ public class GridManager : MonoBehaviour
     public Vector2 GridWorldCenter => gridOrigin + new Vector2(GridWorldWidth * 0.5f, GridWorldHeight * 0.5f);
 
     private Node[,] _grid;
-    private List<SpriteRenderer> _obstacleSpritesCached;
+    private readonly List<Collider2D> _obstacleColliders = new List<Collider2D>();
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        CacheObstacleSprites();
         InitGrid();
     }
 
-    private void CacheObstacleSprites()
+    public void RegisterObstacleColliders(List<Collider2D> colliders)
     {
-        _obstacleSpritesCached = new List<SpriteRenderer>();
-        SpriteRenderer[] allSprites = FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None);
-        
-        
-        foreach (SpriteRenderer sprite in allSprites)
-        {
-            
-            if (sprite.sortingLayerName == obstaclesSortingLayer)
-            {
-                _obstacleSpritesCached.Add(sprite);
-                Debug.Log($"[Grid Manager] ✓ Cached obstacle sprite: {sprite.gameObject.name}");
-            }
-        }
+        _obstacleColliders.AddRange(colliders);
+    }
+
+    public void ClearObstacleColliders()
+    {
+        _obstacleColliders.Clear();
     }
 
     private void InitGrid()
     {
         _grid = new Node[width, height];
-
         for (int x = 0; x < width; x++)
-        {
             for (int y = 0; y < height; y++)
-            {
-                Vector2 pos = CellCenter(x, y);
-                bool walkable = !HasObstacleSpriteAtPosition(pos);
-                _grid[x, y] = new Node(walkable, pos, x, y);
-            }
-        }
+                _grid[x, y] = new Node(true, CellCenter(x, y), x, y);
     }
 
-    private bool HasObstacleSpriteAtPosition(Vector2 pos)
+    private bool HasObstacleAt(Vector2 pos)
     {
-        if (_obstacleSpritesCached == null || _obstacleSpritesCached.Count == 0)
-            return false;
-
-        // Create a small check area
-        Vector3 checkPos = new Vector3(pos.x, pos.y, 0);
-        Bounds checkBounds = new Bounds(checkPos, Vector3.one * cellSize * 0.8f);
-        
-        foreach (SpriteRenderer sprite in _obstacleSpritesCached)
+        Bounds checkBounds = new Bounds(new Vector3(pos.x, pos.y, 0), Vector3.one * cellSize * 0.8f);
+        foreach (Collider2D col in _obstacleColliders)
         {
-            if (sprite == null) continue;
-            
-            Collider2D collider = sprite.GetComponent<Collider2D>();
-            if (collider != null && collider.bounds.Intersects(checkBounds))
-            {
+            if (col != null && col.bounds.Intersects(checkBounds))
                 return true;
-            }
         }
-        
         return false;
     }
 
     public void UpdateGrid()
     {
-        CacheObstacleSprites();
-        // InitGrid();
-        for (int x = 0; x < width; x++) {
+        for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
-            {
-                Vector2 pos = CellCenter(x, y);
-                _grid[x, y].walkable = !HasObstacleSpriteAtPosition(pos);
-            }
-        }
+                _grid[x, y].walkable = !HasObstacleAt(CellCenter(x, y));
+        OnGridUpdated?.Invoke();
+    }
+
+    public void SetNodesWalkable(Node[] nodes, bool walkable)
+    {
+        foreach (Node n in nodes)
+            if (n != null) n.walkable = walkable;
         OnGridUpdated?.Invoke();
     }
 

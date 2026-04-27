@@ -114,7 +114,11 @@ public class TowerPlacer : MonoBehaviour
         Vector2 blockCenter = _anchorNode.worldPosition + new Vector2(cs * 0.5f, cs * 0.5f);
         Instantiate(towerPrefab, blockCenter, Quaternion.identity);
 
-        GridManager.Instance?.UpdateGrid();
+        Node[] nodes = GetBlockNodes(_anchorNode);
+        if (nodes != null)
+            GridManager.Instance?.SetNodesWalkable(nodes, false);
+        else
+            GridManager.Instance?.UpdateGrid();
 
         AudioManager.Instance?.PlaySFX(SFXType.TowerPlace, blockCenter);
     }
