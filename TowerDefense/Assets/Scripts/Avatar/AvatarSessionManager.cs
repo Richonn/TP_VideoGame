@@ -126,12 +126,5 @@ public class AvatarSessionManager : MonoBehaviour
             Sprite avatarIcon = GetAvatarIcon(avatarType);
             hudManager.UpdatePlayerAvatarIcon(playerNumber, avatarIcon);
         }
-
-        // Update sprite renderer if it exists
-        // SpriteRenderer spriteRenderer = player.GetComponentInChildren<SpriteRenderer>();
-        // if (spriteRenderer != null)
-        // {
-        //     // The sprite will be updated by the animator, but you can set idle sprite here if needed
-        // }
     }
 }
