@@ -159,11 +159,13 @@ public class MapGenerator : MonoBehaviour
 
             if (layer.clusterBonus > 0f)
             {
+                int w = occupied.GetLength(0);
+                int h = occupied.GetLength(1);
                 bool hasNeighbour =
-                    (x > 0                    && occupied[x - 1, y]) ||
-                    (x < blueprint.width  - 1 && occupied[x + 1, y]) ||
-                    (y > 0                    && occupied[x, y - 1]) ||
-                    (y < blueprint.height - 1 && occupied[x, y + 1]);
+                    (x > 0     && occupied[x - 1, y]) ||
+                    (x < w - 1 && occupied[x + 1, y]) ||
+                    (y > 0     && occupied[x, y - 1]) ||
+                    (y < h - 1 && occupied[x, y + 1]);
 
                 if (hasNeighbour) probability += layer.clusterBonus;
             }

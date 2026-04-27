@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 851abaa6c563a412299631d925ff6e6d, type: 3}
+  m_Name: DefaultMap
+  m_EditorClassIdentifier: Assembly-CSharp::MapBlueprint
+  displayName: Default Map
+  presetSeed: 42
+  useRandomSeed: 1
+  width: 20
+  height: 10
+  trees:
+    label: 
+    variantSet: {fileID: 11400000, guid: afb572c3ece3e480cb95bd48d7522e86, type: 2}
+    density: 0.12
+    noiseScale: 4
+    clusterBonus: 0.05
+    minSpacing: 2
+  bushes:
+    label: 
+    variantSet: {fileID: 0}
+    density: 0
+    noiseScale: 0
+    clusterBonus: 0
+    minSpacing: 0
+  rocks:
+    label: 
+    variantSet: {fileID: 11400000, guid: 2be2e36e40d3f40119b88ed43b39ddae, type: 2}
+    density: 0.06
+    noiseScale: 5
+    clusterBonus: 0.35
+    minSpacing: 1
+  obstacleStartX: 0
+  safeCorridorHalfHeight: 8
+  edgePadding: 3

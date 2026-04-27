@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c21a9801d104444ce8faf952a97fcb11, type: 3}
+  m_Name: TreeVariantSet
+  m_EditorClassIdentifier: Assembly-CSharp::BlockVariantSet
+  variants:
+  - prefab: {fileID: 6782719421733667894, guid: 76bca0bed883b4148aee375dec97f958, type: 3}
+    weight: 1
+  - prefab: {fileID: 4312618369677156607, guid: 8533becdfcac344d7a7d88b1cac6ec6e, type: 3}
+    weight: 1
+  - prefab: {fileID: 3285187763182169622, guid: 82cd3dfef48454a68bbfb0583920a429, type: 3}
+    weight: 1
+  - prefab: {fileID: 8944905652432118425, guid: 56839de55f6ce465c80a969fee2688b2, type: 3}
+    weight: 1
+  scaleVariation: 0.15
+  randomFlipX: 1
