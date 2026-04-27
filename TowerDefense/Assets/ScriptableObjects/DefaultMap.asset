@@ -26,11 +26,11 @@ MonoBehaviour:
     minSpacing: 2
   bushes:
     label: 
-    variantSet: {fileID: 0}
-    density: 0
-    noiseScale: 0
+    variantSet: {fileID: 11400000, guid: 902f79d9e67df44b6b362da97d9d0d98, type: 2}
+    density: 0.08
+    noiseScale: 3.5
     clusterBonus: 0
-    minSpacing: 0
+    minSpacing: 1
   rocks:
     label: 
     variantSet: {fileID: 11400000, guid: 2be2e36e40d3f40119b88ed43b39ddae, type: 2}
