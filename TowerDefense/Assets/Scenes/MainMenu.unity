@@ -1415,6 +1415,10 @@ MonoBehaviour:
   sfxParam: SFXVolume
   ambientParam: AmbientVolume
   sfxPrewarm: 12
+  ambientClip: {fileID: 8300000, guid: b64a2e0c57a6341d4b0aeb8ca49611ed, type: 3}
+  ambientVolume: 0.5
+  ambientFadeTime: 1.5
+  ambientSceneName: Game
 --- !u!4 &2063407525
 Transform:
   m_ObjectHideFlags: 0

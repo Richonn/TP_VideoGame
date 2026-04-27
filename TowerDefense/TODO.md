@@ -8,6 +8,24 @@
 
 ## TP2 — Interactivité (29 mars 2026)
 
+### 📊 Note reçue (66/80 + individuel)
+- Flot d'application : **15/15**
+- Contrôle des agents : 11/15
+- Multijoueur — Gestion des entrées : **5/5**
+- Multijoueur — Affichage : **5/5**
+- Agent autonome : **10/10**
+- Recherche de chemin : 3/10 *(sources non remises)*
+- Interface graphique : 17/20
+- Fonctionnalités individuelles :
+  - Léandre — Rendu interactif avancé : **17/20**
+  - Marion — Personnalisation des entrées : 11/20
+  - Antonin — IA : 9/20 *(sources non remises)*
+
+### 📌 Leçons à retenir pour le TP3
+- [x] **Inclure les sources dans le zip** — cause #1 de points perdus, à ne pas reproduire
+- [x] Documenter clairement chaque fonctionnalité dans le PDF
+- [x] Vérifier que le projet compile et se lance depuis le zip extrait
+
 ### 🔧 Setup & Architecture
 - [x] Créer le projet Unity 6 (Universal 2D)
 - [x] Organiser la structure des dossiers (Scripts, Prefabs, Sprites, Audio…)
@@ -121,50 +139,129 @@
 
 ## TP3 — Rétroaction audiovisuelle (30 avril 2026)
 
-### 🎬 Animation `/15`
-- [x] Animation des ennemis (marche, mort)
-- [ ] Animation des tours (rotation vers cible, tir)
-- [x] Animation des joueurs (idle, marche)
-- [x] Animation coordonnée aux événements (mort, placement de tour…)
-- [ ] Flot d'animation sans bugs majeurs
+### 🎬 Animation des agents `/15`
+- [x] `EnemyAI` — flash rouge sur dégâts (`HitFlash`), états `HURT`/`DYING`
+- [x] Animation des joueurs (idle, marche, flip horizontal selon direction)
+- [x] Auto-add `FootstepEmitter` sur Player + ennemis (mode auto basé mouvement)
+- [~] `Tower.cs` câble `_animator?.SetTrigger("fire")` dans `ShootAtEnemy` — **inerte tant qu'il n'y a pas de `Tower.controller` avec ce paramètre**
+- [ ] **Créer `Tower.controller`** (states Idle / Fire, trigger `fire`) + clip `Tower_Fire.anim` (scale punch). L'attacher au prefab Tower
+- [ ] (Bonus) Dupliquer les clips `.anim` Tiny Swords et ajouter des `AnimationEvent` `OnStep` pour les pas (critère "coordonné aux events")
+- [ ] (Bonus) `AnimationEvent` `OnAttackHitFrame` sur le clip d'attaque ennemi (remplace le timer)
 
 ### 🎞️ Animation de l'interface `/20`
-- [ ] Animation de l'interface (transitions HUD, pop-ups)
-- [x] Animation par code écrit par l'équipe (pas juste Animator)
-- [x] Easing sur les animations
-- [x] Plusieurs types d'animations
+- [x] `Easing.cs` — fonctions d'easing maison (Linear, EaseOutBack, EaseOutElastic, EaseInOutSine, etc.)
+- [x] `UITween.cs` — API statique : `FadeTo`, `ScaleTo`, `MoveTo`, `ColorTo`, `FillTo`, `Punch`, `CountTo`
+- [x] `UITweenRunner.cs` — singleton DontDestroyOnLoad qui héberge les coroutines en `unscaledDeltaTime` (marche en pause)
+- [x] `UIButtonFeedback.cs` — hover punch + click feedback + SFX, attaché aux boutons générés
+- [x] `HUDManager` — fill HP tween + couleur, count ressources, slide-in du phase text, punch wave
+- [x] `MainMenuController` — fade + scale elastic du panel difficulté, button feedback
+- [x] `PauseMenuController` — scale-in du panel sur ouverture, button feedback
+- [x] `GameOverController` — cascade in (titre → subtitle → waves)
+- [x] `TowerInteractUI` — scale-in du prompt et du menu (cache la scale d'origine)
 
-### ✨ Effets de particules `/15`
-- [ ] Explosion à la mort d'un ennemi
-- [ ] Effet de tir des tours
-- [ ] Effet de destruction d'une tour
-- [x] Effet visuel sur la base quand elle prend des dégâts
-- [ ] Pooling des particules (système codé par l'équipe)
+### ✨ Effets de particules (VFX) `/15`
+- [x] `VFXPool.cs` — pool générique maison (Queue<GameObject>, Get/Release/Prewarm)
+- [x] `VFXManager.cs` — singleton `Dictionary<VFXType, VFXPool>`, API `Play(type, pos)`
+- [x] `AutoReleaseParticle.cs` — retour automatique au pool quand la particle system est terminée
+- [x] `HitFlash.cs` — composant flash rouge réutilisable
+- [x] `CameraShake.cs` — shake amplitude/duration avec damping, sur Camera_P2
+- [x] `Projectile.cs` — projectile pooled, vol linéaire avec rotation auto vers la cible
+- [x] `VFXManager.LaunchProjectile(from, to)` + `ReleaseProjectile`
+- [x] 8 prefabs VFX : TowerMuzzle, TowerImpact, TowerPlace, TowerUpgrade, EnemyHit, EnemyDeath, BaseHit, ResourceGain
+- [x] Prefab Projectile (sprite circle élongé, jaune)
+- [x] `VFXManager` installé dans `Game.unity` avec les 8 entries câblées
+- [x] Sorting layer `UI` + order 500 pour rendre par-dessus tout
+- [ ] (Bonus) Effets lumineux URP `Light2D` pulse sur muzzle / torches ambiantes
+- [ ] (Bonus) `Light2DPulse.cs` pour le critère « effets lumineux »
 
 ### 🔊 Ambiance sonore `/15`
-- [ ] Musique de fond (loop)
-- [ ] Volume musique ajustable séparément
+- [x] `AudioMixer GameAudioMixer.mixer` créé avec 4 groupes (Master / Music / SFX / Ambient)
+- [x] Paramètres exposés : `MasterVolume`, `MusicVolume`, `SFXVolume`, `AmbientVolume`
+- [x] `AudioManager` singleton DontDestroyOnLoad avec crossfade musique
+- [x] `AudioManager.PlayMusic(track, fadeTime)` — crossfade entre 2 AudioSources
+- [x] AudioListener fallback auto sur l'AudioManager (gère le manque de listener dans Game.unity)
+- [x] Subscribe à `OnPhaseChanged` pour switcher la musique automatiquement (Menu → Prep → Defense)
+- [x] 6 musiques importées + câblées : `music_menu`, `music_prep`, `music_defense_light`, `music_defense_intense`, `music_victory`, `music_defeat`
+- [x] 1 ambient `ambient_wind` joué en boucle pendant le Game (AudioManager étendu, sub-AudioSource sur groupe Ambient, auto-play à l'entrée Game, fade-out à la sortie)
+- [x] `CREDITS.md` rédigé avec sources CC-BY 3.0 / CC0
+- [x] Compresser les .wav en Vorbis dans l'Inspector Unity (Streaming, Quality 60-65, ~260 MB → ~25 MB)
+- [ ] (Bonus) Importer un `ambient_torch` 3D spatialisé sur les torches pour le critère « spatialisation »
 
 ### 🔊 Effets sonores `/15`
-- [ ] Son de tir des tours
-- [ ] Son de mort des ennemis
-- [ ] Son de placement d'une tour
-- [ ] Son de dégâts sur la base
-- [ ] Son de Game Over / Victoire
-- [ ] Volume SFX ajustable séparément
+- [x] `SFXLibrary.cs` ScriptableObject — mapping `SFXType → AudioClip[]` avec variantes random
+- [x] `AudioSourcePool.cs` — pool d'AudioSources pour les SFX poolés
+- [x] `MainSFXLibrary.asset` rempli avec 25 SFX (Tower, Enemy, Base, Player, UI)
+- [x] `AudioManager.PlaySFX(type, worldPos)` — spatialisé 3D si `worldPos` fourni (`spatialBlend = 1f`)
+- [x] Wiring complet dans `Tower`, `EnemyAI`, `BaseController`, `TowerPlacer`, `ResourceManager`
+- [x] SFX UI sur les boutons (`UIButtonFeedback`)
+- [x] `FootstepEmitter` auto-attaché sur Player (`PlayerFootstep`) et ennemis (`EnemyFootstep`)
+
+### 🎚️ Volumes séparés (sliders Settings) `/bonus`
+- [x] `SettingsPanelController.cs` : 4 sliders (Master/Music/SFX/Ambient) + back button. Hookup direct aux 4 méthodes `AudioManager.SetXxxVolume()`. Persistance via `PlayerPrefs` (`vol_master/music/sfx/ambient`). Mode "panneau enfant" via `Populate(panel, onBack)`.
+- [x] `AudioManager.Start()` charge les `PlayerPrefs` et applique les volumes sauvegardés.
+- [x] Bouton "Settings" sous Controls dans le menu Pause (`PauseMenuController.BuildMainPanel`).
 
 ### ⭐ Fonctionnalités individuelles TP3 `/20 chacun`
-- [ ] **Membre 1** — Génération procédurale de la map
-- [ ] **Membre 2** — Personnalisation des avatars
-- [ ] **Membre 3** — (à définir selon choix TP2)
+
+#### Léandre — Génération procédurale de l'environnement
+- [x] `MapBlueprint.cs` ScriptableObject (largeur, hauteur, densités, seed)
+- [x] `BlockVariantSet.cs` ScriptableObject (liste de variantes par type)
+- [x] `MapGenerator.cs` — pose des blocs selon blueprint + seed déterministe + animation spawn `EaseOutBack`
+- [ ] **Créer 3 ScriptableObjects `BlockVariantSet`** : `TreeVariants`, `BushVariants`, `RockVariants` (drag les prefabs Tiny Swords)
+- [ ] **Créer un `MapBlueprint` `DefaultMap.asset`** avec les 3 sets liés
+- [ ] **Installer le GameObject `MapGenerator` dans `Game.unity`** et lui assigner `DefaultMap`
+- [ ] **Configurer `Project Settings → Script Execution Order → MapGenerator → -100`** (avant GridManager)
+- [ ] Vérifier que les obstacles sont bien sur le sorting layer `Obstacles`
+- [ ] Tester avec différents seeds → toujours jouable + variation visuelle
+
+#### Marion — Personnalisation de l'avatar
+- [x] `AvatarProfile.cs` — sérialisation PlayerPrefs (classe, couleur primaire, tint secondaire, scale, flip)
+- [x] `AvatarCustomizer.cs` — application du profil (swap controller, MaterialPropertyBlock tint)
+- [x] `AvatarCustomizationPanel.cs` — UI de personnalisation (le script existe dans `Scripts/UI/`)
+- [x] `SpriteMaskedTint.shader` — shader maskée pour la teinte secondaire
+- [ ] **Créer un material `AvatarAccessoryTint.mat`** dans `Assets/Materials/Avatar/`
+- [ ] **Créer un prefab `AvatarPreview`** (basé sur un Pawn Tiny Swords) avec `AvatarCustomizer` câblé
+- [ ] Remplir les `ClassSet[]` (Archer/Lancer/Warrior/Monk × 5 couleurs Tiny Swords)
+- [ ] Créer une texture de masque par classe
+- [ ] **Construire le panel UI dans MainMenu** : 4 boutons classe, 5 boutons couleur, 3 sliders RGB, slider scale, toggle flip
+- [ ] Brancher chaque widget aux champs sérialisés du `AvatarCustomizationPanel`
+- [ ] Bouton "Confirm" qui sauve via `AvatarProfile.SaveForPlayer` et applique au player en jeu
+
+#### Antonin — Musique dynamique
+- [x] `DynamicMusicDirector.cs` — singleton, écoute `OnPhaseChanged`, `OnWaveChanged`, `OnHPChanged`
+- [x] États : Menu, PrepCalm, DefenseLight, DefenseIntense, Victory, Defeat
+- [x] Crossfade entre 2×3 AudioSources (drums/melody/strings) avec courbe `Easing`
+- [x] Synchronisation au beat via `AudioSettings.dspTime` + `bpm` + `beatsPerBar`
+- [x] API `PlayJingle(Jingle id)` superposé au fond
+- [x] Auto-cession à l'AudioManager si Director absent (pas de conflit)
+- [ ] **Trouver/produire 3 stems pour `DefenseLight`** (drums + melody + strings) en CC-BY — `Audio/Stems/` est vide
+- [ ] Trouver/produire 2-3 stems pour `Preparation`
+- [ ] Trouver 5 jingles courts (WaveStart, WaveComplete, BaseLowHP, Victory, Defeat)
+- [ ] **Installer le GameObject `DynamicMusicDirector` dans `Game.unity`**
+- [ ] Câbler les `MusicState` entries dans l'Inspector
+- [ ] Tester la transition au beat (HP base < 40% → DefenseIntense)
 
 ### 📄 Document TP3
-- [ ] Méthodes d'animation des agents
-- [ ] Méthodes d'animation de l'interface
-- [ ] Description des effets de particules et contextes
-- [ ] Description de l'ambiance sonore
-- [ ] Liste des effets sonores et contextes
-- [ ] Description de la fonctionnalité optionnelle
+- [ ] Section animation des agents (méthodes employées)
+- [ ] Section animation de l'interface (UITween + easing maison)
+- [ ] Section VFX + contexte d'utilisation + screenshots
+- [ ] Section ambiance sonore (musiques, foleys, spatialisation)
+- [ ] Section SFX (liste + contexte)
+- [ ] Description des 3 fonctionnalités individuelles (qui a fait quoi)
+- [ ] Crédits assets (CC-BY 3.0 / CC0) — repompable depuis `Audio/CREDITS.md`
+- [ ] Captures d'écran in-game pour illustrer
+
+### 📦 Remise finale
+- [ ] Build Windows et/ou Mac dans `Build/`
+- [ ] Tester le build sur une machine sans Unity
+- [ ] Vérifier qu'aucune exception ne ressort en console
+- [ ] Archive `IFT2103H26_TP3_EquipeXX.zip`
+- [ ] **Inclure les sources** : `Assets/`, `Packages/`, `ProjectSettings/` (cause #1 du TP2)
+- [ ] **Exclure** : `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `Build/`, `obj/`, `.vs/`, `.idea/`, `*.blob`
+- [ ] PDF à la racine du zip avec le même nom que l'archive
+- [ ] `README.md` à la racine : instructions de lancement, contrôles, crédits équipe
+- [ ] Vérifier que le projet ouvre proprement depuis le zip extrait
+- [ ] Test final par un membre qui ne l'a pas compilé
 
 ---
 

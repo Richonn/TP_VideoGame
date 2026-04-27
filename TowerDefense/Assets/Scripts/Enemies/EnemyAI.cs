@@ -83,6 +83,7 @@ public class EnemyAI : MonoBehaviour
             if (_attackTimer <= 0f)
             {
                 _baseController?.TakeDamage(baseDamage);
+                AudioManager.Instance?.PlaySFX(SFXType.EnemyAttack, transform.position);
                 _attackTimer = attackCooldown;
             }
             return;
@@ -207,6 +208,7 @@ public class EnemyAI : MonoBehaviour
 
         _currentHP -= damage;
         _hitFlash?.Flash();
+        AudioManager.Instance?.PlaySFX(SFXType.EnemyHit, transform.position);
 
         if (_currentHP <= 0)
             Die();

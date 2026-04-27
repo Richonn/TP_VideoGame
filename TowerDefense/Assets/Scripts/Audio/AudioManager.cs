@@ -14,6 +14,14 @@ public enum MusicTrack
     Defeat
 }
 
+public static class VolumeKeys
+{
+    public const string Master  = "vol_master";
+    public const string Music   = "vol_music";
+    public const string SFX     = "vol_sfx";
+    public const string Ambient = "vol_ambient";
+}
+
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
@@ -45,9 +53,16 @@ public class AudioManager : MonoBehaviour
     [Header("Pool")]
     [SerializeField] private int sfxPrewarm = 12;
 
+    [Header("Ambient")]
+    [SerializeField] private AudioClip ambientClip;
+    [SerializeField, Range(0f, 1f)] private float ambientVolume = 0.5f;
+    [SerializeField] private float ambientFadeTime = 1.5f;
+    [SerializeField] private string ambientSceneName = "Game";
+
     private AudioSourcePool _sfxPool;
     private AudioSource _musicA;
     private AudioSource _musicB;
+    private AudioSource _ambient;
     private bool _usingA = true;
     private MusicTrack _currentTrack = MusicTrack.None;
 
@@ -66,15 +81,27 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        if (ambientClip == null)
+            ambientClip = Resources.Load<AudioClip>("Audio/ambient_wind");
+
         _sfxPool = new AudioSourcePool(transform, sfxGroup, sfxPrewarm);
 
         _musicA = CreateMusicSource("MusicA");
         _musicB = CreateMusicSource("MusicB");
+        _ambient = CreateAmbientSource("AmbientLoop");
 
         _fallbackListener = GetComponent<AudioListener>();
         if (_fallbackListener == null)
             _fallbackListener = gameObject.AddComponent<AudioListener>();
         SyncListener();
+    }
+
+    void Start()
+    {
+        SetMasterVolume(PlayerPrefs.GetFloat(VolumeKeys.Master, 0.8f));
+        SetMusicVolume(PlayerPrefs.GetFloat(VolumeKeys.Music, 0.7f));
+        SetSFXVolume(PlayerPrefs.GetFloat(VolumeKeys.SFX, 0.8f));
+        SetAmbientVolume(PlayerPrefs.GetFloat(VolumeKeys.Ambient, 0.6f));
     }
 
     void OnEnable()
@@ -92,6 +119,27 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SyncListener();
+        UpdateAmbient(scene.name);
+    }
+
+    private void UpdateAmbient(string sceneName)
+    {
+        if (_ambient == null) return;
+        bool shouldPlay = ambientClip != null && sceneName == ambientSceneName;
+
+        if (shouldPlay)
+        {
+            if (_ambient.outputAudioMixerGroup != ambientGroup) _ambient.outputAudioMixerGroup = ambientGroup;
+            if (_ambient.clip != ambientClip) _ambient.clip = ambientClip;
+            _ambient.loop = true;
+            _ambient.mute = false;
+            if (!_ambient.isPlaying) _ambient.Play();
+            StartCoroutine(FadeMusic(_ambient, ambientVolume, ambientFadeTime));
+        }
+        else
+        {
+            StartCoroutine(FadeMusic(_ambient, 0f, ambientFadeTime));
+        }
     }
 
     private void SyncListener()
@@ -131,6 +179,18 @@ public class AudioManager : MonoBehaviour
         src.playOnAwake = false;
         src.loop = true;
         src.outputAudioMixerGroup = musicGroup;
+        src.volume = 0f;
+        return src;
+    }
+
+    private AudioSource CreateAmbientSource(string name)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(transform);
+        AudioSource src = go.AddComponent<AudioSource>();
+        src.playOnAwake = false;
+        src.loop = true;
+        src.outputAudioMixerGroup = ambientGroup;
         src.volume = 0f;
         return src;
     }

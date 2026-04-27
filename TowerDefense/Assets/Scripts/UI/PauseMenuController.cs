@@ -12,6 +12,7 @@ public class PauseMenuController : MonoBehaviour
 
     private GameObject _mainPanel;
     private GameObject _controlsPanel;
+    private GameObject _settingsPanel;
 
     private bool _isPaused;
     public bool IsPaused => _isPaused;
@@ -61,12 +62,14 @@ public class PauseMenuController : MonoBehaviour
     {
         _mainPanel?.SetActive(true);
         _controlsPanel?.SetActive(false);
+        _settingsPanel?.SetActive(false);
     }
 
     private void ShowControlsPanel()
     {
         _mainPanel?.SetActive(false);
         _controlsPanel?.SetActive(true);
+        _settingsPanel?.SetActive(false);
         AnimatePanelIn(_controlsPanel);
         if (_controlsPanel != null)
         {
@@ -79,7 +82,15 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
-    private void OnSettings() { }
+    private void ShowSettingsPanel()
+    {
+        _mainPanel?.SetActive(false);
+        _controlsPanel?.SetActive(false);
+        _settingsPanel?.SetActive(true);
+        AnimatePanelIn(_settingsPanel);
+    }
+
+    private void OnSettings() { ShowSettingsPanel(); }
 
     private void OnControls() { ShowControlsPanel(); }
 
@@ -137,11 +148,13 @@ public class PauseMenuController : MonoBehaviour
         _mainPanel = BuildMainPanel(canvasGO);
         _controlsPanel = BuildControlsPanel(canvasGO);
         _controlsPanel?.SetActive(false);
+        _settingsPanel = BuildSettingsPanel(canvasGO);
+        _settingsPanel?.SetActive(false);
     }
 
     private GameObject BuildMainPanel(GameObject parent)
     {
-        GameObject panel = CreatePanel(parent, 500, 620);
+        GameObject panel = CreatePanel(parent, 500, 700);
 
         VerticalLayoutGroup vlg = panel.AddComponent<VerticalLayoutGroup>();
         vlg.spacing = 12;
@@ -153,9 +166,29 @@ public class PauseMenuController : MonoBehaviour
         AddTitle(panel, "PAUSE");
         CreateButton(panel, "Resume", Resume);
         CreateButton(panel, "Controls", OnControls);
+        CreateButton(panel, "Settings", OnSettings);
         CreateButton(panel, "Restart", OnRestart);
         CreateButton(panel, "Back to Menu", OnBackToMenu);
         CreateButton(panel, "Quit", OnQuit);
+
+        return panel;
+    }
+
+    private GameObject BuildSettingsPanel(GameObject parent)
+    {
+        GameObject panel = CreatePanel(parent, 560, 560);
+
+        VerticalLayoutGroup vlg = panel.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing = 12;
+        vlg.padding = new RectOffset(30, 30, 30, 30);
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+        vlg.childAlignment = TextAnchor.UpperCenter;
+
+        AddTitle(panel, "AUDIO SETTINGS");
+
+        SettingsPanelController controller = panel.AddComponent<SettingsPanelController>();
+        controller.Populate(panel, ShowMainPanel);
 
         return panel;
     }
