@@ -218,7 +218,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7997252028516866003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8734306c719feaccba7f1c98b8e53b17, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b2f2fa3bd6c94183bc5bf41edc062a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitFlash
   flashColor: {r: 1, g: 0, b: 0, a: 1}
