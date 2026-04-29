@@ -291,6 +291,8 @@ public class PauseMenuController : MonoBehaviour
 
     private void BuildPlayerAvatarSection(GameObject parent, int playerNumber)
     {
+        AvatarProfile profile = AvatarProfile.LoadForPlayer(playerNumber);
+
         GameObject sectionGO = new GameObject($"Player{playerNumber}_AvatarSection");
         sectionGO.transform.SetParent(parent.transform, false);
 
@@ -301,7 +303,7 @@ public class PauseMenuController : MonoBehaviour
         vlg.childForceExpandHeight = false;
         LayoutElement le = sectionGO.AddComponent<LayoutElement>();
         le.flexibleWidth = 1;
-        le.preferredHeight = 120;
+        le.preferredHeight = 200;
 
         // Player label
         GameObject labelGO = new GameObject("Label");
@@ -314,7 +316,7 @@ public class PauseMenuController : MonoBehaviour
         LayoutElement labelLE = labelGO.AddComponent<LayoutElement>();
         labelLE.preferredHeight = 30;
 
-        // Avatar grid container
+        // Color buttons row
         GameObject gridContainerGO = new GameObject("GridContainer");
         gridContainerGO.transform.SetParent(sectionGO.transform, false);
         HorizontalLayoutGroup hlg = gridContainerGO.AddComponent<HorizontalLayoutGroup>();
@@ -324,35 +326,128 @@ public class PauseMenuController : MonoBehaviour
         hlg.childAlignment = TextAnchor.MiddleLeft;
         LayoutElement gridLE = gridContainerGO.AddComponent<LayoutElement>();
         gridLE.flexibleWidth = 1;
-        gridLE.flexibleHeight = 1;
+        gridLE.preferredHeight = 70;
 
-        // Create avatar buttons using hardcoded avatars
-        CreateAvatarButtonForPlayer(gridContainerGO, AvatarSessionManager.AvatarType.Red, playerNumber);
-        CreateAvatarButtonForPlayer(gridContainerGO, AvatarSessionManager.AvatarType.Blue, playerNumber);
-        CreateAvatarButtonForPlayer(gridContainerGO, AvatarSessionManager.AvatarType.Purple, playerNumber);
-        CreateAvatarButtonForPlayer(gridContainerGO, AvatarSessionManager.AvatarType.Yellow, playerNumber);
-        CreateAvatarButtonForPlayer(gridContainerGO, AvatarSessionManager.AvatarType.Black, playerNumber);
+        AvatarSessionManager.AvatarType[] types = {
+            AvatarSessionManager.AvatarType.Black,
+            AvatarSessionManager.AvatarType.Blue,
+            AvatarSessionManager.AvatarType.Purple,
+            AvatarSessionManager.AvatarType.Red,
+            AvatarSessionManager.AvatarType.Yellow
+        };
+        for (int i = 0; i < types.Length; i++)
+        {
+            int colorIdx = i;
+            AvatarSessionManager.AvatarType t = types[i];
+            CreateAvatarButtonForPlayer(gridContainerGO, t, playerNumber, colorIdx, profile);
+        }
+
+        // Tint sliders
+        AddTintSliderRow(sectionGO, "Tint R", profile.secondaryTint.r, v =>
+        {
+            profile.secondaryTint.r = v;
+            profile.SaveForPlayer(playerNumber);
+            AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber,
+                types[Mathf.Clamp(profile.pawnColorIndex, 0, types.Length - 1)], profile);
+        });
+        AddTintSliderRow(sectionGO, "Tint G", profile.secondaryTint.g, v =>
+        {
+            profile.secondaryTint.g = v;
+            profile.SaveForPlayer(playerNumber);
+            AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber,
+                types[Mathf.Clamp(profile.pawnColorIndex, 0, types.Length - 1)], profile);
+        });
+        AddTintSliderRow(sectionGO, "Tint B", profile.secondaryTint.b, v =>
+        {
+            profile.secondaryTint.b = v;
+            profile.SaveForPlayer(playerNumber);
+            AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber,
+                types[Mathf.Clamp(profile.pawnColorIndex, 0, types.Length - 1)], profile);
+        });
     }
 
-    private void CreateAvatarButtonForPlayer(GameObject parent, AvatarSessionManager.AvatarType avatarType, int playerNumber)
+    private void AddTintSliderRow(GameObject parent, string labelText, float initialValue, UnityEngine.Events.UnityAction<float> onChange)
+    {
+        GameObject rowGO = new GameObject(labelText + "_Row");
+        rowGO.transform.SetParent(parent.transform, false);
+        HorizontalLayoutGroup rowHLG = rowGO.AddComponent<HorizontalLayoutGroup>();
+        rowHLG.spacing = 10;
+        rowHLG.childForceExpandWidth = false;
+        rowHLG.childForceExpandHeight = false;
+        rowHLG.childAlignment = TextAnchor.MiddleLeft;
+        LayoutElement rowLE = rowGO.AddComponent<LayoutElement>();
+        rowLE.flexibleWidth = 1;
+        rowLE.preferredHeight = 28;
+
+        GameObject labelGO = new GameObject("Label");
+        labelGO.transform.SetParent(rowGO.transform, false);
+        TextMeshProUGUI tmp = labelGO.AddComponent<TextMeshProUGUI>();
+        tmp.text = labelText;
+        tmp.fontSize = 16;
+        tmp.color = Color.white;
+        tmp.alignment = TextAlignmentOptions.MidlineLeft;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        LayoutElement labelLE2 = labelGO.AddComponent<LayoutElement>();
+        labelLE2.preferredWidth = 70;
+        labelLE2.preferredHeight = 28;
+
+        GameObject sliderGO = new GameObject("Slider");
+        sliderGO.transform.SetParent(rowGO.transform, false);
+        LayoutElement sliderLE = sliderGO.AddComponent<LayoutElement>();
+        sliderLE.flexibleWidth = 1;
+        sliderLE.preferredHeight = 28;
+
+        GameObject bgGO = new GameObject("Background");
+        bgGO.transform.SetParent(sliderGO.transform, false);
+        Image bgImg = bgGO.AddComponent<Image>();
+        bgImg.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+        RectTransform bgRT = bgGO.GetComponent<RectTransform>();
+        bgRT.anchorMin = new Vector2(0f, 0.25f);
+        bgRT.anchorMax = new Vector2(1f, 0.75f);
+        bgRT.offsetMin = bgRT.offsetMax = Vector2.zero;
+
+        GameObject fillAreaGO = new GameObject("Fill Area");
+        fillAreaGO.transform.SetParent(sliderGO.transform, false);
+        RectTransform fillAreaRT = fillAreaGO.AddComponent<RectTransform>();
+        fillAreaRT.anchorMin = new Vector2(0f, 0.25f);
+        fillAreaRT.anchorMax = new Vector2(1f, 0.75f);
+        fillAreaRT.offsetMin = fillAreaRT.offsetMax = Vector2.zero;
+
+        GameObject fillGO = new GameObject("Fill");
+        fillGO.transform.SetParent(fillAreaGO.transform, false);
+        Image fillImg = fillGO.AddComponent<Image>();
+        fillImg.color = new Color(0.25f, 0.55f, 0.9f, 1f);
+        RectTransform fillRT = fillGO.GetComponent<RectTransform>();
+        fillRT.anchorMin = Vector2.zero;
+        fillRT.anchorMax = new Vector2(initialValue, 1f);
+        fillRT.offsetMin = fillRT.offsetMax = Vector2.zero;
+
+        GameObject handleGO = new GameObject("Handle");
+        handleGO.transform.SetParent(sliderGO.transform, false);
+        Image handleImg = handleGO.AddComponent<Image>();
+        handleImg.color = Color.white;
+        RectTransform handleRT = handleGO.GetComponent<RectTransform>();
+        handleRT.sizeDelta = new Vector2(20, 20);
+
+        Slider slider = sliderGO.AddComponent<Slider>();
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.value = initialValue;
+        slider.fillRect = fillRT;
+        slider.handleRect = handleRT;
+        slider.targetGraphic = handleImg;
+        slider.direction = Slider.Direction.LeftToRight;
+        slider.onValueChanged.AddListener(onChange);
+    }
+
+    private void CreateAvatarButtonForPlayer(GameObject parent, AvatarSessionManager.AvatarType avatarType,
+                                             int playerNumber, int colorIndex, AvatarProfile profile)
     {
         GameObject buttonGO = new GameObject(avatarType.ToString());
         buttonGO.transform.SetParent(parent.transform, false);
 
         Image btnImage = buttonGO.AddComponent<Image>();
-        btnImage.color = Color.white;
-        
-        // Load and set the icon sprite
-        Sprite iconSprite = Resources.Load<Sprite>($"AvatarIcons/{avatarType}");
-        if (iconSprite != null)
-        {
-            btnImage.sprite = iconSprite;
-        }
-        else
-        {
-            Debug.LogWarning($"[PauseMenu] Avatar icon not found: AvatarIcons/{avatarType}");
-            btnImage.color = new Color(0.3f, 0.3f, 0.3f, 1f);
-        }
+        btnImage.color = AvatarTypeToColor(avatarType);
 
         Button btn = buttonGO.AddComponent<Button>();
         ColorBlock cb = btn.colors;
@@ -363,7 +458,9 @@ public class PauseMenuController : MonoBehaviour
 
         btn.onClick.AddListener(() =>
         {
-            AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber, avatarType);
+            profile.pawnColorIndex = colorIndex;
+            profile.SaveForPlayer(playerNumber);
+            AvatarSessionManager.Instance?.SetPlayerAvatar(playerNumber, avatarType, profile);
             AudioManager.Instance?.PlaySFX(SFXType.UIClick);
         });
 
@@ -371,6 +468,16 @@ public class PauseMenuController : MonoBehaviour
         le.preferredWidth = 70;
         le.preferredHeight = 70;
     }
+
+    private static Color AvatarTypeToColor(AvatarSessionManager.AvatarType t) => t switch
+    {
+        AvatarSessionManager.AvatarType.Black  => new Color(0.2f, 0.2f, 0.2f),
+        AvatarSessionManager.AvatarType.Blue   => new Color(0.2f, 0.4f, 0.9f),
+        AvatarSessionManager.AvatarType.Purple => new Color(0.6f, 0.2f, 0.8f),
+        AvatarSessionManager.AvatarType.Red    => new Color(0.9f, 0.2f, 0.2f),
+        AvatarSessionManager.AvatarType.Yellow => new Color(0.95f, 0.8f, 0.1f),
+        _ => Color.white
+    };
 
     private GameObject BuildControlsPanel(GameObject parent)
     {

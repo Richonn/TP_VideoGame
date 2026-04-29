@@ -2,129 +2,87 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-/// <summary>
-/// Manages avatar selection for the current session.
-/// Does not persist data - resets on game quit.
-/// </summary>
 public class AvatarSessionManager : MonoBehaviour
 {
-    public enum AvatarType { Red, Blue, Purple, Yellow, Black }
+    public enum AvatarType { Black, Blue, Purple, Red, Yellow }
 
     public static AvatarSessionManager Instance { get; private set; }
 
-    private AvatarType _player1Avatar = AvatarType.Blue;
-    private AvatarType _player2Avatar = AvatarType.Purple;
+    private AvatarType    _player1Avatar  = AvatarType.Blue;
+    private AvatarType    _player2Avatar  = AvatarType.Purple;
+    private AvatarProfile _player1Profile = null;
+    private AvatarProfile _player2Profile = null;
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Survive scene transitions
+        DontDestroyOnLoad(gameObject);
+
+        _player1Profile = AvatarProfile.LoadForPlayer(1);
+        _player2Profile = AvatarProfile.LoadForPlayer(2);
+        _player1Avatar  = (AvatarType)Mathf.Clamp(_player1Profile.pawnColorIndex, 0, 4);
+        _player2Avatar  = (AvatarType)Mathf.Clamp(_player2Profile.pawnColorIndex, 0, 4);
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+    void OnEnable()  { SceneManager.sceneLoaded += OnSceneLoaded; }
+    void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
 
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    /// <summary>
-    /// Re-applies both players' avatars after a new scene finishes loading,
-    /// because PlayerController objects are freshly instantiated each time.
-    /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Small delay via coroutine so all Start() methods have run first
         StartCoroutine(ApplyAvatarsNextFrame());
     }
 
     private System.Collections.IEnumerator ApplyAvatarsNextFrame()
     {
-        yield return null; // wait one frame for PlayerControllers to Start()
-        UpdatePlayerAvatar(1);
-        UpdatePlayerAvatar(2);
+        yield return null;
+        ApplyToPlayer(1);
+        ApplyToPlayer(2);
     }
 
-    public AvatarType GetPlayerAvatar(int playerNumber)
+    public AvatarType GetPlayerAvatar(int playerNumber) =>
+        playerNumber == 1 ? _player1Avatar : _player2Avatar;
+
+    public void SetPlayerAvatar(int playerNumber, AvatarType avatarType, AvatarProfile profile = null)
     {
-        if (playerNumber == 1) return _player1Avatar;
-        if (playerNumber == 2) return _player2Avatar;
-        return AvatarType.Blue;
+        if (playerNumber == 1) { _player1Avatar = avatarType; if (profile != null) _player1Profile = profile; }
+        else                   { _player2Avatar = avatarType; if (profile != null) _player2Profile = profile; }
+        ApplyToPlayer(playerNumber);
     }
 
-    public void SetPlayerAvatar(int playerNumber, AvatarType avatarType)
+    private void ApplyToPlayer(int playerNumber)
     {
-        if (playerNumber == 1)
+        PlayerController player = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
+            .FirstOrDefault(p => p.playerNumber == playerNumber);
+        if (player == null) return;
+
+        AvatarProfile profile = (playerNumber == 1 ? _player1Profile : _player2Profile)
+                                ?? AvatarProfile.LoadForPlayer(playerNumber);
+
+        AvatarCustomizer customizer = player.GetComponentInChildren<AvatarCustomizer>();
+        if (customizer != null)
         {
-            _player1Avatar = avatarType;
-            UpdatePlayerAvatar(1);
+            customizer.Apply(profile);
         }
-        else if (playerNumber == 2)
+        else
         {
-            _player2Avatar = avatarType;
-            UpdatePlayerAvatar(2);
+            RuntimeAnimatorController ctrl = GetAnimatorController(playerNumber == 1 ? _player1Avatar : _player2Avatar);
+            if (ctrl != null) player.ApplyAnimatorController(ctrl);
         }
+
+        HUDManager hud = FindFirstObjectByType<HUDManager>();
+        hud?.UpdatePlayerAvatarIcon(playerNumber, GetAvatarIcon(playerNumber == 1 ? _player1Avatar : _player2Avatar));
     }
 
     public Sprite GetAvatarIcon(AvatarType avatarType)
     {
-        // Try direct sprite load first
         Sprite s = Resources.Load<Sprite>($"AvatarIcons/{avatarType}");
         if (s != null) return s;
-
-        // Fallback: load as Texture2D and convert
         Texture2D tex = Resources.Load<Texture2D>($"AvatarIcons/{avatarType}");
-        if (tex != null)
-        {
-            Debug.LogWarning($"[Avatar] {avatarType} loaded as Texture2D — set Texture Type to 'Sprite' in import settings!");
-            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-        }
-
-        Debug.LogError($"[Avatar] Could not load AvatarIcons/{avatarType} at all!");
+        if (tex != null) return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
         return null;
     }
 
-    public RuntimeAnimatorController GetAnimatorController(AvatarType avatarType)
-    {
-        return Resources.Load<RuntimeAnimatorController>($"AvatarControllers/{avatarType}");
-    }
-
-    private void UpdatePlayerAvatar(int playerNumber)
-    {
-        PlayerController player = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
-            .FirstOrDefault(p => p.playerNumber == playerNumber);
-
-        if (player == null) return;
-
-        AvatarType avatarType = playerNumber == 1 ? _player1Avatar : _player2Avatar;
-
-        // Update animator controller on the player via the exposed method,
-        // which also refreshes PlayerController's internal cached reference.
-        RuntimeAnimatorController controller = GetAnimatorController(avatarType);
-        if (controller != null)
-        {
-            player.ApplyAnimatorController(controller);
-            Debug.Log($"[Avatar] P{playerNumber} animator set to: AvatarControllers/{avatarType}");
-        }
-        else
-        {
-            Debug.LogWarning($"[Avatar] No controller found at: AvatarControllers/{avatarType}");
-        }
-
-        // Update avatar icon in HUD
-        HUDManager hudManager = FindFirstObjectByType<HUDManager>();
-        if (hudManager != null)
-        {
-            Sprite avatarIcon = GetAvatarIcon(avatarType);
-            hudManager.UpdatePlayerAvatarIcon(playerNumber, avatarIcon);
-        }
-    }
+    public RuntimeAnimatorController GetAnimatorController(AvatarType avatarType) =>
+        Resources.Load<RuntimeAnimatorController>($"AvatarControllers/{avatarType}");
 }
